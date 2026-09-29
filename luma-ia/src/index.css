@@ -1,0 +1,18 @@
+/* Ruta: src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        /* Aumenta el tamaño base de la tipografía para mejor legibilidad por defecto */
+        font-size: 18px; 
+    }
+
+    body {
+        @apply bg-background text-text antialiased;
+        /* Previene el zoom al hacer doble toque rápido, común en usuarios mayores */
+        touch-action: manipulation;
+    }
+}
