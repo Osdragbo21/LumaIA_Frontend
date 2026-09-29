@@ -1,18 +1,37 @@
 /* Ruta: src/index.css */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Paleta cálida basada en el diseño aprobado (Mockup 2) para reducir la fatiga visual */
+  --color-primary: #de5d3a; /* Naranja/Tierra cálido para acciones principales */
+  --color-primary-hover: #c44c2d;
+  --color-primary-content: #ffffff;
+  
+  --color-secondary: #e5e7eb; /* Gris claro para acciones secundarias (Mockup 1) */
+  --color-secondary-hover: #d1d5db;
+  --color-secondary-content: #374151;
+  
+  --color-sos: #d32f2f;
+  --color-sos-hover: #b71c1c;
+  --color-sos-content: #ffffff;
+  
+  --color-background: #fcf8f4; /* Fondo crema/cálido de alto contraste */
+  --color-text: #2b221f; /* Texto oscuro grueso para legibilidad óptima */
+
+  --spacing-touch: 48px;
+}
 
 @layer base {
-    html {
-        /* Aumenta el tamaño base de la tipografía para mejor legibilidad por defecto */
-        font-size: 18px; 
-    }
+  html {
+    font-size: 100%; 
+  }
 
-    body {
-        @apply bg-background text-text antialiased;
-        /* Previene el zoom al hacer doble toque rápido, común en usuarios mayores */
-        touch-action: manipulation;
-    }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+  }
 }
