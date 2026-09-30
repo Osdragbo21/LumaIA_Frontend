@@ -1,8 +1,7 @@
-import axios from 'axios';
-import type { Enum_Rol } from '../../../types';
+// Ruta: src/features/auth/services/auth.service.ts
 
-// Ahora apuntamos a la ruta relativa gracias al Proxy de Vite
-const GRAPHQL_ENDPOINT = '/graphql';
+import { apiClient } from '../../../config/api.client';
+import type { Enum_Rol } from '../../../types';
 
 export interface LoginResponse {
   access_token: string;
@@ -27,7 +26,7 @@ export const loginMutation = async (correo: string, password: string): Promise<L
     }
   `;
 
-  const response = await axios.post(GRAPHQL_ENDPOINT, {
+  const response = await apiClient.post('', {
     query,
     variables: { correo, password },
   });

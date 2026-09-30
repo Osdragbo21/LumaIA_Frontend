@@ -1,9 +1,7 @@
 // Ruta: src/features/medicamentos/services/medicamentos.service.ts
 
-import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
 import type { Medicamento } from '../../../types';
-
-const GRAPHQL_ENDPOINT = '/graphql';
 
 export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicamento[]> => {
   const query = `
@@ -18,13 +16,18 @@ export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicament
     }
   `;
 
-  const response = await axios.post(GRAPHQL_ENDPOINT, {
+  // Usamos el apiClient que ya inyecta el JWT
+  const response = await apiClient.post('', {
     query,
     variables: { usuario_id: usuarioId },
   });
 
-  if (response.data.errors) throw new Error(response.data.errors[0].message);
-  return response.data.data.obtenerMedicamentosPorUsuario;
+  // Interceptamos explícitamente el array de errores de GraphQL
+  if (response.data.errors) {
+    throw new Error(response.data.errors[0].message || 'Error de autorización al obtener medicamentos');
+  }
+
+  return response.data.data.obtenerMedicamentosPorUsuario || [];
 };
 
 export interface CreateMedicamentoInput {
@@ -40,6 +43,7 @@ export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<M
     mutation CrearMedicamento($input: CreateMedicamentoInput!) {
       crearMedicamento(createMedicamentoInput: $input) {
         _id
+        usuario_id
         nombre_farmaco
         dosis
         frecuencia_horas
@@ -48,11 +52,16 @@ export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<M
     }
   `;
 
-  const response = await axios.post(GRAPHQL_ENDPOINT, {
+  // Usamos el apiClient que ya inyecta el JWT
+  const response = await apiClient.post('', {
     query: mutation,
     variables: { input },
   });
 
-  if (response.data.errors) throw new Error(response.data.errors[0].message);
+  // Interceptamos explícitamente el array de errores de GraphQL
+  if (response.data.errors) {
+    throw new Error(response.data.errors[0].message || 'Error de autorización al crear medicamento');
+  }
+
   return response.data.data.crearMedicamento;
 };
