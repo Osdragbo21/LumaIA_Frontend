@@ -5,11 +5,11 @@ import { apiClient } from '../../../config/api.client';
 
 export interface NotaPersonal {
   _id: string;
-  usuario_id: string;
   contenido: string;
   fecha_creacion: string;
 }
 
+// Utilidad para interceptar errores de GraphQL
 const handleGraphQLError = (error: unknown) => {
   if (axios.isAxiosError(error) && error.response?.data?.errors) {
     throw new Error(error.response.data.errors[0].message);
@@ -20,11 +20,11 @@ const handleGraphQLError = (error: unknown) => {
 export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> => {
   if (!usuarioId) throw new Error("Sesión inactiva.");
 
+  // Query exacta proporcionada por el backend
   const query = `
-    query ObtenerNotas($usuario_id: ID!) {
-      obtenerNotasPorUsuario(usuario_id: $usuario_id) {
+    query ObtenerNotasPersonales($usuario_id: ID!) {
+      obtenerNotasPersonalesPorUsuario(usuario_id: $usuario_id) {
         _id
-        usuario_id
         contenido
         fecha_creacion
       }
@@ -41,7 +41,7 @@ export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> =
       throw new Error(response.data.errors[0].message);
     }
 
-    return response.data.data.obtenerNotasPorUsuario || [];
+    return response.data.data.obtenerNotasPersonalesPorUsuario || [];
   } catch (error) {
     handleGraphQLError(error);
     return [];
@@ -51,14 +51,15 @@ export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> =
 export interface CreateNotaInput {
   usuario_id: string;
   contenido: string;
+  fecha_creacion: string; // Exigido por el nuevo contrato
 }
 
 export const crearNota = async (input: CreateNotaInput): Promise<NotaPersonal> => {
+  // Mutation exacta proporcionada por el backend
   const mutation = `
-    mutation CrearNota($input: CreateNotaInput!) {
-      crearNota(createNotaInput: $input) {
+    mutation CrearNotaPersonal($input: CreateNotaPersonalInput!) {
+      crearNotaPersonal(createNotaPersonalInput: $input) {
         _id
-        usuario_id
         contenido
         fecha_creacion
       }
@@ -75,7 +76,7 @@ export const crearNota = async (input: CreateNotaInput): Promise<NotaPersonal> =
       throw new Error(response.data.errors[0].message);
     }
 
-    return response.data.data.crearNota;
+    return response.data.data.crearNotaPersonal;
   } catch (error) {
     handleGraphQLError(error);
     throw error;

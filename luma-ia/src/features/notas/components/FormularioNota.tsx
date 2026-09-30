@@ -18,7 +18,8 @@ export const FormularioNota = ({ usuarioId, onClose, onSuccess }: Props) => {
   const mutation = useMutation({
     mutationFn: () => crearNota({
       usuario_id: usuarioId,
-      contenido: contenido,
+      contenido: contenido.trim(),
+      fecha_creacion: new Date().toISOString(), // Autogenerado en formato ISO-8601
     }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['notas', usuarioId] });
@@ -50,12 +51,12 @@ export const FormularioNota = ({ usuarioId, onClose, onSuccess }: Props) => {
           <div className="flex flex-col gap-2">
             <label className="text-xl font-extrabold text-text">Escribe tu nota o recordatorio</label>
             <textarea 
-              rows={4}
+              rows={5}
               value={contenido} 
               onChange={e => setContenido(e.target.value)} 
               disabled={isPending}
               className="p-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-yellow-500/20 bg-white resize-none" 
-              placeholder="Ej. Comprar víveres y recordar llamada..." 
+              placeholder="Ej. Preguntar al doctor sobre la nueva dieta sin sal..." 
               required 
             />
           </div>
