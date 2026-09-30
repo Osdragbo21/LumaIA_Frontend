@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Enum_Rol } from '../types';
+import type { Enum_Rol } from '../types/index';
 
 interface AuthState {
   token: string | null;
@@ -23,8 +23,6 @@ export const useAuthStore = create<AuthState>()(
       login: (token, usuarioId, rol) => set({ token, usuarioId, rol, isAuthenticated: true }),
       logout: () => set({ token: null, usuarioId: null, rol: null, isAuthenticated: false }),
     }),
-    {
-      name: 'luma-auth-storage',
-    }
+    { name: 'luma-auth-storage' }
   )
 );

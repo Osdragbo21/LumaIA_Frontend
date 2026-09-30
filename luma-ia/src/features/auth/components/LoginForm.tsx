@@ -20,7 +20,6 @@ export const LoginForm = () => {
     mutationFn: () => loginMutation(correo, password),
     onSuccess: (data) => {
       loginFn(data.access_token, data.usuario_id, data.rol);
-      // El App.tsx detectará isAuthenticated = true y enrutará según el rol
       navigate('/');
     },
   });
@@ -29,10 +28,9 @@ export const LoginForm = () => {
     const newErrors: { correo?: string; password?: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!correo) newErrors.correo = 'El correo es obligatorio.';
-    else if (!emailRegex.test(correo)) newErrors.correo = 'Ingresa un correo válido.';
-
-    if (!password) newErrors.password = 'La contraseña es obligatoria.';
+    if (!correo) newErrors.correo = 'Obligatorio';
+    else if (!emailRegex.test(correo)) newErrors.correo = 'Correo inválido';
+    if (!password) newErrors.password = 'Obligatorio';
     
     setValidationErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -40,30 +38,24 @@ export const LoginForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      mutation.mutate();
-    }
+    if (validateForm()) mutation.mutate();
   };
 
   const isLoading = mutation.isPending;
 
   return (
     <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 mt-6" noValidate>
-      {/* Alerta de Error del Backend */}
       {mutation.isError && (
         <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-r-2xl flex items-center gap-3">
           <AlertCircle className="text-sos flex-shrink-0" size={28} />
           <p className="text-text font-bold text-lg">
-            {mutation.error instanceof Error ? mutation.error.message : 'Error al conectar con el servidor.'}
+            {mutation.error instanceof Error ? mutation.error.message : 'Error de conexión'}
           </p>
         </div>
       )}
 
-      {/* Correo */}
       <div className="flex flex-col gap-2">
-        <label htmlFor="correo" className="text-xl font-extrabold text-text">
-          Correo electrónico
-        </label>
+        <label htmlFor="correo" className="text-xl font-extrabold text-text">Correo electrónico</label>
         <input
           id="correo"
           type="email"
@@ -78,11 +70,8 @@ export const LoginForm = () => {
         {validationErrors.correo && <span className="text-sos font-bold text-lg">{validationErrors.correo}</span>}
       </div>
 
-      {/* Contraseña */}
       <div className="flex flex-col gap-2">
-        <label htmlFor="password" className="text-xl font-extrabold text-text">
-          Contraseña
-        </label>
+        <label htmlFor="password" className="text-xl font-extrabold text-text">Contraseña</label>
         <div className="relative">
           <input
             id="password"
@@ -98,8 +87,7 @@ export const LoginForm = () => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 min-w-touch min-h-touch flex items-center justify-center text-slate-500 hover:text-primary rounded-xl"
-            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            className="absolute right-2 top-1/2 -translate-y-1/2 min-w-touch min-h-touch flex items-center justify-center text-slate-500 hover:text-primary"
           >
             {showPassword ? <EyeOff size={28} /> : <Eye size={28} />}
           </button>
@@ -107,23 +95,12 @@ export const LoginForm = () => {
         {validationErrors.password && <span className="text-sos font-bold text-lg">{validationErrors.password}</span>}
       </div>
 
-      {/* Botón Principal */}
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full min-h-touch mt-4 bg-primary hover:bg-primary-hover text-primary-content text-2xl font-bold rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+        className="w-full min-h-touch mt-4 bg-primary hover:bg-primary-hover text-primary-content text-2xl font-bold rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70 shadow-md"
       >
-        {isLoading ? (
-          <>
-            <Loader2 className="animate-spin" size={32} />
-            Entrando...
-          </>
-        ) : (
-          <>
-            Iniciar sesión
-            <ArrowRight size={32} strokeWidth={3} />
-          </>
-        )}
+        {isLoading ? <><Loader2 className="animate-spin" size={32} /> Entrando...</> : <><ArrowRight size={32} strokeWidth={3} /> Iniciar sesión</>}
       </button>
     </form>
   );

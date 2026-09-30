@@ -1,38 +1,42 @@
 // Ruta: src/App.tsx
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
+import { LoginPage } from './features/auth/LoginPage';
 
 function App() {
-    const { isAuthenticated, user } = useAuthStore();
+    // Extraemos el estado individualmente para evitar renderizados innecesarios y errores de hook
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const rol = useAuthStore((state) => state.rol);
 
     return (
-        <BrowserRouter>
-        {/* Contenedor estricto Mobile-First */}
-        <div className="w-full min-h-screen bg-slate-50 text-slate-900 md:max-w-md md:mx-auto md:shadow-2xl md:overflow-hidden relative flex flex-col">
-            <Routes>
-            {/* Rutas Públicas (Borrador) */}
-            <Route path="/login" element={<div className="p-4 text-center mt-20">Vista de Login (Próximamente)</div>} />
-            
-            {/* Rutas Privadas simuladas */}
+        <div className="w-full min-h-screen bg-background text-text md:max-w-md md:mx-auto md:shadow-2xl md:overflow-x-hidden relative flex flex-col font-sans">
+        <Routes>
             <Route 
-                path="/" 
-                element={
-                !isAuthenticated ? (
-                    <Navigate to="/login" replace />
-                ) : user?.rol === 'Adulto Mayor' ? (
-                    <Navigate to="/paciente/inicio" replace />
-                ) : (
-                    <Navigate to="/cuidador/inicio" replace />
-                )
-                } 
+            path="/login" 
+            element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} 
             />
             
-            <Route path="/paciente/inicio" element={<div className="p-4">Inicio - Adulto Mayor</div>} />
-            <Route path="/cuidador/inicio" element={<div className="p-4">Inicio - Cuidador</div>} />
-            </Routes>
+            {/* Enrutador principal dinámico según el rol de la BD */}
+            <Route 
+            path="/" 
+            element={
+                !isAuthenticated ? (
+                <Navigate to="/login" replace />
+                ) : rol === 'Adulto Mayor' ? (
+                <Navigate to="/paciente/inicio" replace />
+                ) : (
+                <Navigate to="/cuidador/inicio" replace />
+                )
+            } 
+            />
+            
+            {/* Vistas de comprobación temporal */}
+            <Route path="/paciente/inicio" element={<div className="p-6 text-2xl font-bold">Inicio - Adulto Mayor</div>} />
+            <Route path="/cuidador/inicio" element={<div className="p-6 text-2xl font-bold">Inicio - Cuidador</div>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
         </div>
-        </BrowserRouter>
     );
 }
 

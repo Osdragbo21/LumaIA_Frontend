@@ -1,7 +1,7 @@
 // Ruta: src/features/auth/services/auth.service.ts
 
 import axios from 'axios';
-import type { Enum_Rol } from '../../../types';
+import type { Enum_Rol } from '../../../types/index';
 
 const GRAPHQL_ENDPOINT = 'http://localhost:3000/graphql';
 
@@ -11,11 +11,11 @@ export interface LoginResponse {
   rol: Enum_Rol;
 }
 
-// Transformador: GraphQL (MAYÚSCULAS) -> Frontend (Legible)
+// Mapeador estricto para sincronizar GraphQL (NestJS) con UI (React)
 const mapGraphQLRoleToEnum = (gqlRole: string): Enum_Rol => {
   if (gqlRole === 'ADULTO_MAYOR') return 'Adulto Mayor';
   if (gqlRole === 'CUIDADOR') return 'Cuidador';
-  return 'Adulto Mayor'; // Fallback de seguridad
+  return 'Adulto Mayor'; // Fallback por seguridad
 };
 
 export const loginMutation = async (correo: string, password: string): Promise<LoginResponse> => {
