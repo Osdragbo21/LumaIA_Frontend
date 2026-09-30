@@ -7,6 +7,8 @@ import { PrivateLayout } from './components/layouts/PrivateLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
 // Importamos la nueva vista
 import { MedicamentosPage } from './features/medicamentos/MedicamentosPage';
+import { CitasPage } from './features/citas/CitasPage';
+import { NotasPage } from './features/notas/NotasPage';
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -26,6 +28,12 @@ function App() {
           {/* Registro del nuevo módulo de Medicamentos */}
           <Route path="/paciente/medicamentos" element={<MedicamentosPage />} />
           <Route path="/cuidador/medicamentos" element={<MedicamentosPage />} />
+
+          <Route path="/paciente/citas" element={<CitasPage />} />
+          <Route path="/cuidador/citas" element={<CitasPage />} />
+
+          <Route path="/paciente/notas" element={<NotasPage />} />
+          <Route path="/cuidador/notas" element={<NotasPage />} />
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
