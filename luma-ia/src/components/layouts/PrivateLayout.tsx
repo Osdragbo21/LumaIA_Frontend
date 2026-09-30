@@ -13,7 +13,7 @@ export const PrivateLayout = () => {
   const isActive = (path: string) => location.pathname.includes(path);
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-[#f8fafc] relative pb-20 md:max-w-md md:mx-auto md:shadow-2xl overflow-x-hidden font-sans">
+    <div className="flex flex-col min-h-screen w-full bg-slate-50 relative pb-20 md:max-w-md md:mx-auto md:shadow-2xl overflow-x-hidden">
       <main className="flex-1 overflow-y-auto w-full">
         <Outlet />
       </main>

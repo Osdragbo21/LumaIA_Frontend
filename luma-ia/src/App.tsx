@@ -2,58 +2,58 @@
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
-import { LoginPage } from './features/auth/LoginPage';
-import { PrivateLayout } from './components/layouts/PrivateLayout';
-import { DashboardPage } from './features/dashboard/DashboardPage';
-// Importamos la nueva vista
-import { MedicamentosPage } from './features/medicamentos/MedicamentosPage';
-import { CitasPage } from './features/citas/CitasPage';
-import { NotasPage } from './features/notas/NotasPage';
-import { RedApoyoPage } from './features/red-apoyo/RedApoyoPage';
-import { RegistroPage } from './features/auth/RegistroPage';
-import { VinculacionPage } from './features/vinculacion/VinculacionPage';
-//import { asistenteView } from './features/ia/components/AsistenteView';
-import { TareasPage } from './features/tareas/TareasPage'
 
-function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const rol = useAuthStore((state) => state.rol);
+// Layouts
+import { PrivateLayout } from './components/layouts/PrivateLayout';
+
+// Páginas (Asegúrate de tener estos imports)
+import { LoginPage } from './features/auth/LoginPage';
+import { RegistroPage } from './features/auth/RegistroPage';
+import { DashboardPage } from './features/dashboard/DashboardPage';
+import { TareasPage } from './features/tareas/TareasPage';
+import { AsistenteView } from './features/ia/components/AsistenteView';
+import { RedApoyoPage } from './features/red-apoyo/RedApoyoPage';
+// ... importa las demás vistas (medicamentos, citas, notas)
+
+export const App = () => {
+  const { token } = useAuthStore();
+  const isAuthenticated = !!token;
 
   return (
-    <div className="w-full min-h-screen bg-background text-text md:max-w-md md:mx-auto md:shadow-2xl md:overflow-x-hidden relative flex flex-col font-sans">
-      <Routes>
-        <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
-        <Route path="/registro" element={<RegistroPage />} />
+    <Routes>
+      {/* 1. RUTAS PÚBLICAS */}
+      <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
+      <Route path="/registro" element={!isAuthenticated ? <RegistroPage /> : <Navigate to="/" replace />} />
 
+      {/* 2. RUTAS PROTEGIDAS (ENVUELTAS POR EL LAYOUT) */}
+      <Route element={isAuthenticated ? <PrivateLayout /> : <Navigate to="/login" replace />}>
         
-        <Route element={isAuthenticated ? <PrivateLayout /> : <Navigate to="/login" replace />}>
-          <Route path="/" element={ rol === 'Adulto Mayor' ? <Navigate to="/paciente/inicio" replace /> : <Navigate to="/cuidador/inicio" replace /> } />
-          <Route path="/vinculacion" element={<VinculacionPage />} />
-          <Route path="/paciente/inicio" element={<DashboardPage />} />
-          <Route path="/cuidador/inicio" element={<DashboardPage />} />
-          
-          {/* Registro del nuevo módulo de Medicamentos */}
-          <Route path="/paciente/medicamentos" element={<MedicamentosPage />} />
-          <Route path="/cuidador/medicamentos" element={<MedicamentosPage />} />
-
-          <Route path="/paciente/citas" element={<CitasPage />} />
-          <Route path="/cuidador/citas" element={<CitasPage />} />
-
-          <Route path="/paciente/notas" element={<NotasPage />} />
-          <Route path="/cuidador/notas" element={<NotasPage />} />
-
-          <Route path="/paciente/red-apoyo" element={<RedApoyoPage />} />
-          <Route path="/cuidador/red-apoyo" element={<RedApoyoPage />} />
-
-          <Route path="/paciente/tareas" element={<TareasPage />} />
-          <Route path="/cuidador/tareas" element={<TareasPage />} />
-
-        </Route>
+        {/* Inicio / Dashboard */}
+        <Route path="/paciente/inicio" element={<DashboardPage />} />
+        <Route path="/cuidador/inicio" element={<DashboardPage />} />
         
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </div>
+        {/* Hub de Tareas */}
+        <Route path="/paciente/tareas" element={<TareasPage />} />
+        <Route path="/cuidador/tareas" element={<TareasPage />} />
+
+        {/* Asistente Lógico */}
+        <Route path="/paciente/asistente" element={<AsistenteView />} />
+        <Route path="/cuidador/asistente" element={<AsistenteView />} />
+
+        {/* Red de Apoyo */}
+        <Route path="/paciente/red-apoyo" element={<RedApoyoPage />} />
+        <Route path="/cuidador/red-apoyo" element={<RedApoyoPage />} />
+
+        {/* 
+          NOTA: Si tienes rutas para los submódulos (ej. /paciente/medicamentos) 
+          también deben ir AQUÍ ADENTRO para que conserven la barra inferior. 
+        */}
+
+      </Route>
+
+      {/* 3. REDIRECCIÓN RAÍZ Y FALLBACK */}
+      <Route path="/" element={<Navigate to={isAuthenticated ? (useAuthStore.getState().rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio') : '/login'} replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
-}
-
-export default App;
+};
