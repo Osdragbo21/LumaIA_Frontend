@@ -1,9 +1,22 @@
 // Ruta: src/features/medicamentos/services/medicamentos.service.ts
 
+import axios from 'axios';
 import { apiClient } from '../../../config/api.client';
 import type { Medicamento } from '../../../types';
 
+// Utilidad para interceptar errores de GraphQL (Simulando el comportamiento de Apollo)
+const handleGraphQLError = (error: unknown) => {
+  // Si el backend responde con un HTTP 400/500 pero incluye el array de GraphQL
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  // Si es un error de red puro
+  throw error;
+};
+
 export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicamento[]> => {
+  if (!usuarioId) throw new Error("No hay una sesión activa para consultar medicamentos.");
+
   const query = `
     query ObtenerMedicamentos($usuario_id: ID!) {
       obtenerMedicamentosPorUsuario(usuario_id: $usuario_id) {
@@ -16,18 +29,22 @@ export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicament
     }
   `;
 
-  // Usamos el apiClient que ya inyecta el JWT
-  const response = await apiClient.post('', {
-    query,
-    variables: { usuario_id: usuarioId },
-  });
+  try {
+    const response = await apiClient.post('', {
+      query,
+      variables: { usuario_id: usuarioId },
+    });
 
-  // Interceptamos explícitamente el array de errores de GraphQL
-  if (response.data.errors) {
-    throw new Error(response.data.errors[0].message || 'Error de autorización al obtener medicamentos');
+    // Si el backend devuelve HTTP 200 pero incluye errores lógicos de GraphQL
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.obtenerMedicamentosPorUsuario || [];
+  } catch (error) {
+    handleGraphQLError(error);
+    return []; // Satisfacer la firma de TypeScript, aunque el throw cortará la ejecución antes
   }
-
-  return response.data.data.obtenerMedicamentosPorUsuario || [];
 };
 
 export interface CreateMedicamentoInput {
@@ -52,16 +69,19 @@ export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<M
     }
   `;
 
-  // Usamos el apiClient que ya inyecta el JWT
-  const response = await apiClient.post('', {
-    query: mutation,
-    variables: { input },
-  });
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
 
-  // Interceptamos explícitamente el array de errores de GraphQL
-  if (response.data.errors) {
-    throw new Error(response.data.errors[0].message || 'Error de autorización al crear medicamento');
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.crearMedicamento;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error; // Obligatorio lanzar el error para que React Query dispare el estado isError en la UI
   }
-
-  return response.data.data.crearMedicamento;
 };
