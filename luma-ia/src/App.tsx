@@ -12,7 +12,8 @@ import { NotasPage } from './features/notas/NotasPage';
 import { RedApoyoPage } from './features/red-apoyo/RedApoyoPage';
 import { RegistroPage } from './features/auth/RegistroPage';
 import { VinculacionPage } from './features/vinculacion/VinculacionPage';
-import { asistenteView } from './features/ia/components/AsistenteView';
+//import { asistenteView } from './features/ia/components/AsistenteView';
+import { TareasPage } from './features/tareas/TareasPage'
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
         <Route path="/registro" element={<RegistroPage />} />
+
         
         <Route element={isAuthenticated ? <PrivateLayout /> : <Navigate to="/login" replace />}>
           <Route path="/" element={ rol === 'Adulto Mayor' ? <Navigate to="/paciente/inicio" replace /> : <Navigate to="/cuidador/inicio" replace /> } />
@@ -43,8 +45,9 @@ function App() {
           <Route path="/paciente/red-apoyo" element={<RedApoyoPage />} />
           <Route path="/cuidador/red-apoyo" element={<RedApoyoPage />} />
 
-          <AppRoute path="/paciente/asistente" element={<asistenteView />} />
-          <AppRoute path="/cuidador/asistente" element={<asistenteView />} />
+          <Route path="/paciente/tareas" element={<TareasPage />} />
+          <Route path="/cuidador/tareas" element={<TareasPage />} />
+
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
