@@ -1,8 +1,6 @@
-// Ruta: src/types/index.ts
-
-export type RolUsuario = 'Adulto Mayor' | 'Cuidador';
-export type EstadoToma = 'Pendiente' | 'Confirmada' | 'Omitida';
-export type EstadoCita = 'Programada' | 'Completada' | 'Cancelada';
+export type Enum_Rol = 'Adulto Mayor' | 'Cuidador';
+export type Enum_EstadoToma = 'Pendiente' | 'Confirmada' | 'Omitida';
+export type Enum_EstadoCita = 'Programada' | 'Completada' | 'Cancelada';
 
 export interface ContactoEmergencia {
     nombre_contacto: string;
@@ -14,8 +12,7 @@ export interface Usuario {
     _id: string;
     nombre: string;
     correo: string;
-    password_hash?: string; // Opcional en el frontend por seguridad
-    rol: RolUsuario;
+    rol: Enum_Rol;
     cuidador_vinculado_id?: string;
     pin_vinculacion?: string;
     estado_activo: boolean;
@@ -28,42 +25,33 @@ export interface Medicamento {
     usuario_id: string;
     nombre_farmaco: string;
     dosis: string;
-    frecuencia_horas: number;
+    frecuencia_horas?: number;
     horarios_especificos: string[];
-    fecha_eliminacion: string | null;
-}
-
-export interface RegistroToma {
-    _id: string;
-    medicamento_id: string;
-    fecha_programada: string;
-    estado_toma: EstadoToma;
-    fecha_confirmacion: string | null;
+    fecha_eliminacion?: string; 
 }
 
 export interface Cita {
     _id: string;
     usuario_id: string;
     titulo_evento: string;
-    fecha_hora: string;
-    ubicacion: string;
-    estado: EstadoCita;
-    fecha_eliminacion: string | null;
+    fecha_hora: string; 
+    ubicacion?: string;
+    estado: Enum_EstadoCita;
+    fecha_eliminacion?: string; 
 }
 
 export interface NotaPersonal {
     _id: string;
     usuario_id: string;
     contenido: string;
-    fecha_creacion: string;
-    fecha_eliminacion: string | null;
+    fecha_creacion: string; 
+    fecha_eliminacion?: string; 
 }
 
-export interface LogInteraccion {
+export interface RegistroToma {
     _id: string;
-    usuario_id: string;
-    premisa_entrada: string;
-    respuesta_generada: string;
-    bloqueo_medico: boolean;
-    fecha_interaccion: string;
+    medicamento_id: string;
+    fecha_programada: string; 
+    estado_toma: Enum_EstadoToma;
+    fecha_confirmacion?: string; 
 }

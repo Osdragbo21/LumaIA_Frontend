@@ -2,27 +2,29 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Usuario } from '../types';
+import type { Enum_Rol } from '../types';
 
 interface AuthState {
-    token: string | null;
-    user: Usuario | null;
-    isAuthenticated: boolean;
-    login: (token: string, user: Usuario) => void;
-    logout: () => void;
+  token: string | null;
+  usuarioId: string | null;
+  rol: Enum_Rol | null;
+  isAuthenticated: boolean;
+  login: (token: string, usuarioId: string, rol: Enum_Rol) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
-    persist(
-        (set) => ({
-        token: null,
-        user: null,
-        isAuthenticated: false,
-        login: (token, user) => set({ token, user, isAuthenticated: true }),
-        logout: () => set({ token: null, user: null, isAuthenticated: false }),
-        }),
-        {
-        name: 'luma-auth-storage', // Nombre de la clave en localStorage
-        }
-    )
+  persist(
+    (set) => ({
+      token: null,
+      usuarioId: null,
+      rol: null,
+      isAuthenticated: false,
+      login: (token, usuarioId, rol) => set({ token, usuarioId, rol, isAuthenticated: true }),
+      logout: () => set({ token: null, usuarioId: null, rol: null, isAuthenticated: false }),
+    }),
+    {
+      name: 'luma-auth-storage',
+    }
+  )
 );
