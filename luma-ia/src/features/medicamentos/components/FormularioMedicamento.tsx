@@ -8,9 +8,10 @@ import { Loader2, AlertCircle } from 'lucide-react';
 interface Props {
   usuarioId: string;
   onClose: () => void;
+  onSuccess: () => void; // Nuevo callback para disparar el Toast
 }
 
-export const FormularioMedicamento = ({ usuarioId, onClose }: Props) => {
+export const FormularioMedicamento = ({ usuarioId, onClose, onSuccess }: Props) => {
   const queryClient = useQueryClient();
   const [nombre, setNombre] = useState('');
   const [dosis, setDosis] = useState('');
@@ -21,12 +22,13 @@ export const FormularioMedicamento = ({ usuarioId, onClose }: Props) => {
       usuario_id: usuarioId,
       nombre_farmaco: nombre,
       dosis: dosis,
-      frecuencia_horas: 24, // Frecuencia por defecto en esta fase
+      frecuencia_horas: 24, 
       horarios_especificos: [hora]
     }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['medicamentos', usuarioId] });
-      onClose();
+    onSuccess: async () => {
+      // Obligamos a React Query a refetcher los datos desde MongoDB
+      await queryClient.invalidateQueries({ queryKey: ['medicamentos', usuarioId] });
+      onSuccess(); // Dispara el Toast y cierra el modal
     },
   });
 

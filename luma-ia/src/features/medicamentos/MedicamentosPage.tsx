@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { Pill, Plus, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
+import { Pill, Plus, AlertCircle, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { obtenerMedicamentos } from './services/medicamentos.service';
@@ -12,6 +12,7 @@ export const MedicamentosPage = () => {
   const { rol, usuarioId } = useAuthStore();
   const navigate = useNavigate();
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [toastMensaje, setToastMensaje] = useState<string | null>(null);
 
   const { data: medicamentos = [], isLoading, isError, error } = useQuery({
     queryKey: ['medicamentos', usuarioId],
@@ -21,8 +22,24 @@ export const MedicamentosPage = () => {
 
   const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
 
+  const manejarExitoGuardado = () => {
+    setMostrarModal(false);
+    setToastMensaje('¡Medicamento guardado correctamente!');
+    // Ocultar el toast después de 3 segundos
+    setTimeout(() => setToastMensaje(null), 3000);
+  };
+
   return (
-    <div className="flex flex-col min-h-full bg-background p-6">
+    <div className="flex flex-col min-h-full bg-background p-6 relative">
+      
+      {/* Toast de Notificación Visual */}
+      {toastMensaje && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-green-100 border-2 border-green-500 text-green-900 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center gap-3 font-bold text-lg animate-in slide-in-from-top-10 fade-in duration-300">
+          <CheckCircle size={28} className="text-green-600 flex-shrink-0" />
+          {toastMensaje}
+        </div>
+      )}
+
       <header className="flex items-center gap-4 mb-8">
         <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary/20">
           <ArrowLeft size={28} strokeWidth={2.5} />
@@ -44,6 +61,7 @@ export const MedicamentosPage = () => {
         </div>
       )}
 
+      {/* Renderizado de la lista si hay datos */}
       {!isLoading && !isError && medicamentos.length > 0 && (
         <div className="flex flex-col gap-4 pb-24">
           {medicamentos.map((med) => (
@@ -62,6 +80,7 @@ export const MedicamentosPage = () => {
         </div>
       )}
 
+      {/* Estado vacío[cite: 23] */}
       {!isLoading && !isError && medicamentos.length === 0 && (
         <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center mt-4">
           <div className="bg-orange-100 text-orange-600 p-4 rounded-full mb-4">
@@ -80,7 +99,14 @@ export const MedicamentosPage = () => {
         </button>
       </div>
 
-      {mostrarModal && <FormularioMedicamento usuarioId={usuarioId!} onClose={() => setMostrarModal(false)} />}
+      {/* Renderizado del Modal[cite: 24] */}
+      {mostrarModal && (
+        <FormularioMedicamento 
+          usuarioId={usuarioId!} 
+          onClose={() => setMostrarModal(false)} 
+          onSuccess={manejarExitoGuardado} 
+        />
+      )}
     </div>
   );
 };
