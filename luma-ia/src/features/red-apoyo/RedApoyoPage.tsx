@@ -1,6 +1,6 @@
 // Ruta: src/features/red-apoyo/RedApoyoPage.tsx
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Users, Plus, AlertCircle, ArrowLeft, Loader2, CheckCircle, PhoneCall } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,6 @@ export const RedApoyoPage = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [toastMensaje, setToastMensaje] = useState<string | null>(null);
 
-  // Consultamos el perfil para extraer los contactos[cite: 17]
   const { data: perfil, isLoading, isError, error } = useQuery({
     queryKey: ['perfil', usuarioId],
     queryFn: () => obtenerPerfil(usuarioId!),
@@ -58,11 +57,10 @@ export const RedApoyoPage = () => {
       {isError && (
         <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-2xl flex items-start gap-3 mb-6">
           <AlertCircle className="text-sos flex-shrink-0 mt-1" size={28} />
-          <p className="text-text font-bold text-lg">{error instanceof Error ? error.message : 'Error al conectar'}</p>
+          <p className="text-text font-bold text-lg">{error instanceof Error ? error.message : 'Error al obtener perfil'}</p>
         </div>
       )}
 
-      {/* Renderizado del arreglo anidado de contactos[cite: 16] */}
       {!isLoading && !isError && contactos.length > 0 && (
         <div className="flex flex-col gap-4 pb-24">
           {contactos.map((contacto, idx) => (

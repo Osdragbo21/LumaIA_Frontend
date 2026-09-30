@@ -24,9 +24,8 @@ const handleGraphQLError = (error: unknown) => {
   throw error;
 };
 
-// Obtenemos el perfil completo del usuario[cite: 17]
 export const obtenerPerfil = async (usuarioId: string): Promise<PerfilUsuario> => {
-  if (!usuarioId) throw new Error("Sesión inactiva.");
+  if (!usuarioId) throw new Error("ID de usuario no válido o sesión inactiva.");
 
   const query = `
     query ObtenerPerfil($usuario_id: ID!) {
@@ -50,7 +49,7 @@ export const obtenerPerfil = async (usuarioId: string): Promise<PerfilUsuario> =
       variables: { usuario_id: usuarioId },
     });
 
-    if (response.data.errors?.length > 0) {
+    if (response.data.errors && response.data.errors.length > 0) {
       throw new Error(response.data.errors[0].message);
     }
 
@@ -88,7 +87,7 @@ export const agregarContacto = async (input: AgregarContactoInput): Promise<Cont
       variables: { input },
     });
 
-    if (response.data.errors?.length > 0) {
+    if (response.data.errors && response.data.errors.length > 0) {
       throw new Error(response.data.errors[0].message);
     }
 

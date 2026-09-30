@@ -19,13 +19,13 @@ export const FormularioContacto = ({ usuarioId, onClose, onSuccess }: Props) => 
 
   const mutation = useMutation({
     mutationFn: () => agregarContacto({
-      usuario_id: usuarioId,
+      usuario_id: usuarioId, // ID extraído directamente de Zustand
       nombre_contacto: nombre.trim(),
       telefono: telefono.trim(),
       parentesco: parentesco.trim(),
     }),
     onSuccess: async () => {
-      // Invalidamos la query del perfil para refrescar la lista
+      // Forzamos la actualización de la lista de contactos en el perfil
       await queryClient.invalidateQueries({ queryKey: ['perfil', usuarioId] });
       onSuccess();
     },
