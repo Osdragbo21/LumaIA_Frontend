@@ -9,7 +9,12 @@ export interface NotaPersonal {
   fecha_creacion: string;
 }
 
-// Utilidad para interceptar errores de GraphQL
+export interface CreateNotaInput {
+  usuario_id: string;
+  contenido: string;
+  fecha_creacion: string;
+}
+
 const handleGraphQLError = (error: unknown) => {
   if (axios.isAxiosError(error) && error.response?.data?.errors) {
     throw new Error(error.response.data.errors[0].message);
@@ -20,7 +25,6 @@ const handleGraphQLError = (error: unknown) => {
 export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> => {
   if (!usuarioId) throw new Error("Sesión inactiva.");
 
-  // Query exacta proporcionada por el backend
   const query = `
     query ObtenerNotasPersonales($usuario_id: ID!) {
       obtenerNotasPersonalesPorUsuario(usuario_id: $usuario_id) {
@@ -37,7 +41,7 @@ export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> =
       variables: { usuario_id: usuarioId },
     });
 
-    if (response.data.errors && response.data.errors.length > 0) {
+    if (response.data.errors?.length > 0) {
       throw new Error(response.data.errors[0].message);
     }
 
@@ -48,14 +52,7 @@ export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> =
   }
 };
 
-export interface CreateNotaInput {
-  usuario_id: string;
-  contenido: string;
-  fecha_creacion: string; // Exigido por el nuevo contrato
-}
-
 export const crearNota = async (input: CreateNotaInput): Promise<NotaPersonal> => {
-  // Mutation exacta proporcionada por el backend
   const mutation = `
     mutation CrearNotaPersonal($input: CreateNotaPersonalInput!) {
       crearNotaPersonal(createNotaPersonalInput: $input) {
@@ -72,7 +69,7 @@ export const crearNota = async (input: CreateNotaInput): Promise<NotaPersonal> =
       variables: { input },
     });
 
-    if (response.data.errors && response.data.errors.length > 0) {
+    if (response.data.errors?.length > 0) {
       throw new Error(response.data.errors[0].message);
     }
 

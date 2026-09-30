@@ -19,7 +19,7 @@ export const FormularioNota = ({ usuarioId, onClose, onSuccess }: Props) => {
     mutationFn: () => crearNota({
       usuario_id: usuarioId,
       contenido: contenido.trim(),
-      fecha_creacion: new Date().toISOString(), // Autogenerado en formato ISO-8601
+      fecha_creacion: new Date().toISOString(), // Fecha ISO-8601 autogenerada
     }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['notas', usuarioId] });
@@ -49,14 +49,14 @@ export const FormularioNota = ({ usuarioId, onClose, onSuccess }: Props) => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xl font-extrabold text-text">Escribe tu nota o recordatorio</label>
+            <label className="text-xl font-extrabold text-text">Escribe tu nota</label>
             <textarea 
               rows={5}
               value={contenido} 
               onChange={e => setContenido(e.target.value)} 
               disabled={isPending}
               className="p-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-yellow-500/20 bg-white resize-none" 
-              placeholder="Ej. Preguntar al doctor sobre la nueva dieta sin sal..." 
+              placeholder="Ej. Preguntar al doctor sobre la dieta..." 
               required 
             />
           </div>
