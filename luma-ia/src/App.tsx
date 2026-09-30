@@ -9,6 +9,7 @@ import { DashboardPage } from './features/dashboard/DashboardPage';
 import { MedicamentosPage } from './features/medicamentos/MedicamentosPage';
 import { CitasPage } from './features/citas/CitasPage';
 import { NotasPage } from './features/notas/NotasPage';
+import { RedApoyoPage } from './features/red-apoyo/RedApoyoPage';
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -34,6 +35,9 @@ function App() {
 
           <Route path="/paciente/notas" element={<NotasPage />} />
           <Route path="/cuidador/notas" element={<NotasPage />} />
+
+          <Route path="/paciente/red-apoyo" element={<RedApoyoPage />} />
+          <Route path="/cuidador/red-apoyo" element={<RedApoyoPage />} />
         </Route>
         
         <Route path="*" element={<Navigate to="/" replace />} />
