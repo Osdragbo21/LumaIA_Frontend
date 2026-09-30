@@ -1,59 +1,55 @@
 // Ruta: src/components/layouts/PrivateLayout.tsx
 
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
-import { LogOut, Bell, PhoneCall } from 'lucide-react';
+import { Home, Mic, CalendarDays, PhoneCall } from 'lucide-react';
 
 export const PrivateLayout = () => {
-  const { logout, rol } = useAuthStore();
+  const { rol } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const basePath = rol === 'Adulto Mayor' ? '/paciente' : '/cuidador';
+
+  // Función para determinar si el tab está activo
+  const isActive = (path: string) => location.pathname.includes(path);
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background relative">
-      {/* Cabecera Superior */}
-      <header className="flex items-center justify-between p-4 bg-white shadow-sm z-10 sticky top-0">
-        <div className="flex items-center gap-3">
-          <img src="/logo_LumaIA.png" alt="LumaIA" className="h-10 w-auto object-contain" />
-          <span className="font-extrabold text-text text-2xl tracking-tight">LumaIA</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            className="min-h-touch min-w-touch flex items-center justify-center text-slate-600 hover:text-primary rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20"
-            aria-label="Notificaciones"
-          >
-            <Bell size={28} strokeWidth={2.5} />
-          </button>
-          <button 
-            onClick={handleLogout} 
-            className="min-h-touch min-w-touch flex items-center justify-center text-slate-600 hover:text-sos rounded-xl focus:outline-none focus:ring-4 focus:ring-sos/20"
-            aria-label="Cerrar sesión"
-          >
-            <LogOut size={28} strokeWidth={2.5} />
-          </button>
-        </div>
-      </header>
-
+    <div className="flex flex-col min-h-screen w-full bg-slate-50 relative pb-24 md:max-w-md md:mx-auto md:shadow-2xl overflow-x-hidden">
+      
       {/* Contenedor Principal Dinámico */}
-      <main className="flex-1 overflow-y-auto pb-32">
+      <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
 
-      {/* Botón SOS Persistente (Exclusivo para Adulto Mayor según RF-07.2) */}
-      {rol === 'Adulto Mayor' && (
-        <div className="fixed bottom-6 left-0 w-full px-6 md:max-w-md md:mx-auto flex justify-center z-50">
-           <button 
-             className="w-full min-h-touch py-4 bg-sos hover:bg-sos-hover text-sos-content font-extrabold text-2xl rounded-2xl shadow-lg flex items-center justify-center gap-3 focus:outline-none focus:ring-4 focus:ring-sos/40 transition-transform active:scale-95"
-           >
-             <PhoneCall size={32} strokeWidth={3} />
-             BOTÓN SOS
-           </button>
-        </div>
-      )}
+      {/* Barra de Navegación Inferior (Bottom Nav) */}
+      <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 px-2 py-3 z-50 flex justify-around items-center md:max-w-md md:left-1/2 md:-translate-x-1/2 pb-safe">
+        
+        <button onClick={() => navigate(`${basePath}/inicio`)} 
+          className={`flex flex-col items-center gap-1 min-w-[64px] min-h-touch focus:outline-none rounded-xl transition-colors ${isActive('/inicio') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <Home size={28} strokeWidth={isActive('/inicio') ? 3 : 2} />
+          <span className="text-xs font-bold">Inicio</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/asistente`)} 
+          className={`flex flex-col items-center gap-1 min-w-[64px] min-h-touch focus:outline-none rounded-xl transition-colors ${isActive('/asistente') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <Mic size={28} strokeWidth={isActive('/asistente') ? 3 : 2} />
+          <span className="text-xs font-bold text-center leading-tight">Hablar con<br/>Luma</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/tareas`)} 
+          className={`flex flex-col items-center gap-1 min-w-[64px] min-h-touch focus:outline-none rounded-xl transition-colors ${isActive('/tareas') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <CalendarDays size={28} strokeWidth={isActive('/tareas') ? 3 : 2} />
+          <span className="text-xs font-bold text-center leading-tight">Mis<br/>tareas</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/red-apoyo`)} 
+          className={`flex flex-col items-center gap-1 min-w-[64px] min-h-touch focus:outline-none rounded-xl transition-colors ${isActive('/red-apoyo') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <PhoneCall size={28} strokeWidth={isActive('/red-apoyo') ? 3 : 2} />
+          <span className="text-xs font-bold text-center leading-tight">Red de<br/>Apoyo</span>
+        </button>
+
+      </nav>
     </div>
   );
 };
