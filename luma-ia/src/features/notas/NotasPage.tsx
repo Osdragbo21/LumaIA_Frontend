@@ -73,7 +73,8 @@ export const NotasPage = () => {
               <div className="flex flex-col flex-1 gap-1">
                 <p className="text-xl font-bold text-text whitespace-pre-wrap">{nota.contenido}</p>
                 <span className="text-sm text-slate-500 font-medium mt-2">
-                  {new Date(nota.fecha_creacion).toLocaleDateString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })}
+                  {/* SOLUCIÓN: toLocaleString en lugar de toLocaleDateString */}
+                  {new Date(nota.fecha_creacion).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })}
                 </span>
               </div>
             </div>
