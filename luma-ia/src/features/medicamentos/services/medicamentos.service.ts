@@ -1,13 +1,14 @@
+// Ruta: src/features/medicamentos/services/medicamentos.service.ts
+
 import axios from 'axios';
 import type { Medicamento } from '../../../types';
 
 const GRAPHQL_ENDPOINT = '/graphql';
 
-// TODO: Reemplazar con el Query real cuando se proporcione el contrato
-export const getMedicamentos = async (usuarioId: string): Promise<Medicamento[]> => {
+export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicamento[]> => {
   const query = `
-    query GetMedicamentos($usuarioId: String!) {
-      medicamentos(usuario_id: $usuarioId) {
+    query ObtenerMedicamentos($usuario_id: ID!) {
+      obtenerMedicamentosPorUsuario(usuario_id: $usuario_id) {
         _id
         nombre_farmaco
         dosis
@@ -19,12 +20,45 @@ export const getMedicamentos = async (usuarioId: string): Promise<Medicamento[]>
 
   const response = await axios.post(GRAPHQL_ENDPOINT, {
     query,
-    variables: { usuarioId },
+    variables: { usuario_id: usuarioId },
   });
 
   if (response.data.errors) {
     throw new Error(response.data.errors[0].message || 'Error al obtener medicamentos');
   }
 
-  return response.data.data.medicamentos || [];
+  return response.data.data.obtenerMedicamentosPorUsuario || [];
+};
+
+export interface CreateMedicamentoInput {
+  usuario_id: string;
+  nombre_farmaco: string;
+  dosis: string;
+  frecuencia_horas?: number;
+  horarios_especificos: string[];
+}
+
+export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<Medicamento> => {
+  const mutation = `
+    mutation CrearMedicamento($input: CreateMedicamentoInput!) {
+      crearMedicamento(createMedicamentoInput: $input) {
+        _id
+        nombre_farmaco
+        dosis
+        frecuencia_horas
+        horarios_especificos
+      }
+    }
+  `;
+
+  const response = await axios.post(GRAPHQL_ENDPOINT, {
+    query: mutation,
+    variables: { input },
+  });
+
+  if (response.data.errors) {
+    throw new Error(response.data.errors[0].message || 'Error al crear el medicamento');
+  }
+
+  return response.data.data.crearMedicamento;
 };
