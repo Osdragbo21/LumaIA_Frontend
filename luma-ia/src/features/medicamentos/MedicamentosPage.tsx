@@ -1,6 +1,6 @@
 // Ruta: src/features/medicamentos/MedicamentosPage.tsx
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Pill, Plus, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -13,27 +13,23 @@ export const MedicamentosPage = () => {
   const navigate = useNavigate();
   const [mostrarModal, setMostrarModal] = useState(false);
 
-  // Hook de React Query para obtener datos reales de la BD
   const { data: medicamentos = [], isLoading, isError, error } = useQuery({
     queryKey: ['medicamentos', usuarioId],
     queryFn: () => obtenerMedicamentos(usuarioId!),
-    enabled: !!usuarioId, // Solo ejecuta si el usuarioId existe
+    enabled: !!usuarioId,
   });
 
-  const irAInicio = () => {
-    navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
-  };
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
 
   return (
     <div className="flex flex-col min-h-full bg-background p-6">
       <header className="flex items-center gap-4 mb-8">
-        <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50">
+        <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary/20">
           <ArrowLeft size={28} strokeWidth={2.5} />
         </button>
         <h1 className="text-3xl font-extrabold text-text tracking-tight">Mis Medicamentos</h1>
       </header>
 
-      {/* Estados Asíncronos */}
       {isLoading && (
         <div className="flex flex-col items-center justify-center py-12 text-primary">
           <Loader2 className="animate-spin mb-4" size={48} />
@@ -48,12 +44,11 @@ export const MedicamentosPage = () => {
         </div>
       )}
 
-      {/* Lista de Datos */}
       {!isLoading && !isError && medicamentos.length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 pb-24">
           {medicamentos.map((med) => (
             <div key={med._id} className="bg-orange-100/50 border border-orange-200 p-5 rounded-3xl flex items-center gap-4">
-              <div className="text-primary bg-white p-3 rounded-2xl shadow-sm">
+              <div className="text-orange-600 bg-white p-3 rounded-2xl shadow-sm">
                 <Pill size={32} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col flex-1">
@@ -67,10 +62,9 @@ export const MedicamentosPage = () => {
         </div>
       )}
 
-      {/* Estado Vacío */}
       {!isLoading && !isError && medicamentos.length === 0 && (
         <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center mt-4">
-          <div className="bg-orange-100 text-primary p-4 rounded-full mb-4">
+          <div className="bg-orange-100 text-orange-600 p-4 rounded-full mb-4">
             <Pill size={48} strokeWidth={2} />
           </div>
           <h2 className="text-2xl font-extrabold text-text mb-2">Aún no hay medicamentos</h2>
@@ -80,7 +74,7 @@ export const MedicamentosPage = () => {
 
       <div className="mt-auto pt-8">
         <button onClick={() => setMostrarModal(true)}
-          className="w-full min-h-touch py-4 bg-primary hover:bg-primary-hover text-primary-content font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95"
+          className="w-full min-h-touch py-4 bg-primary hover:bg-primary-hover text-primary-content font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary/30"
         >
           <Plus size={32} strokeWidth={3} /> Agregar Medicamento
         </button>

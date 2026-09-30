@@ -23,11 +23,8 @@ export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicament
     variables: { usuario_id: usuarioId },
   });
 
-  if (response.data.errors) {
-    throw new Error(response.data.errors[0].message || 'Error al obtener medicamentos');
-  }
-
-  return response.data.data.obtenerMedicamentosPorUsuario || [];
+  if (response.data.errors) throw new Error(response.data.errors[0].message);
+  return response.data.data.obtenerMedicamentosPorUsuario;
 };
 
 export interface CreateMedicamentoInput {
@@ -56,9 +53,6 @@ export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<M
     variables: { input },
   });
 
-  if (response.data.errors) {
-    throw new Error(response.data.errors[0].message || 'Error al crear el medicamento');
-  }
-
+  if (response.data.errors) throw new Error(response.data.errors[0].message);
   return response.data.data.crearMedicamento;
 };

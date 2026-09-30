@@ -21,7 +21,7 @@ export const FormularioMedicamento = ({ usuarioId, onClose }: Props) => {
       usuario_id: usuarioId,
       nombre_farmaco: nombre,
       dosis: dosis,
-      frecuencia_horas: 24, // Por simplicidad en esta fase, asume toma diaria
+      frecuencia_horas: 24, // Frecuencia por defecto en esta fase
       horarios_especificos: [hora]
     }),
     onSuccess: () => {
@@ -46,7 +46,7 @@ export const FormularioMedicamento = ({ usuarioId, onClose }: Props) => {
         {mutation.isError && (
           <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3 mb-6">
             <AlertCircle className="text-sos flex-shrink-0" size={24} />
-            <p className="text-text font-bold">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
+            <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
           </div>
         )}
 
@@ -54,12 +54,12 @@ export const FormularioMedicamento = ({ usuarioId, onClose }: Props) => {
           <div className="flex flex-col gap-2">
             <label className="text-xl font-extrabold text-text">Nombre del fármaco</label>
             <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} disabled={isPending}
-              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. Paracetamol" required />
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. Losartán" required />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-xl font-extrabold text-text">Dosis indicada</label>
             <input type="text" value={dosis} onChange={e => setDosis(e.target.value)} disabled={isPending}
-              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. 1 tableta" required />
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. 1 pastilla" required />
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-xl font-extrabold text-text">Hora de la toma</label>
