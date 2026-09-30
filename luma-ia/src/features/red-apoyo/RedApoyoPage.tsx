@@ -1,6 +1,6 @@
 // Ruta: src/features/red-apoyo/RedApoyoPage.tsx
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { Users, Plus, AlertCircle, ArrowLeft, Loader2, CheckCircle, PhoneCall } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
