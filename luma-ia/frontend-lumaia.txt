@@ -1,0 +1,2988 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+================================================================
+File Summary
+================================================================
+
+Purpose:
+--------
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+File Format:
+------------
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  a. A separator line (================)
+  b. The file path (File: path/to/file)
+  c. Another separator line
+  d. The full contents of the file
+  e. A blank line
+
+Usage Guidelines:
+-----------------
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+Notes:
+------
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+
+================================================================
+Directory Structure
+================================================================
+public/
+  logo_LumaIA.png
+  Senora_LumaIA.jfif
+src/
+  components/
+    layouts/
+      PrivateLayout.tsx
+  config/
+    api.client.ts
+  features/
+    auth/
+      components/
+        LoginForm.tsx
+      services/
+        auth.service.ts
+        registro.service.ts
+      LoginPage.tsx
+      RegistroPage.tsx
+    citas/
+      components/
+        FormularioCita.tsx
+      services/
+        citas.service.ts
+      CitasPage.tsx
+    dashboard/
+      DashboardPage.tsx
+    ia/
+      components/
+        AsistenteView.tsx
+      services/
+        ia.service.ts
+    medicamentos/
+      components/
+        FormularioMedicamento.tsx
+      services/
+        medicamentos.service.ts
+      MedicamentosPage.tsx
+    notas/
+      components/
+        FormularioNota.tsx
+      services/
+        notas.service.ts
+      NotasPage.tsx
+    red-apoyo/
+      components/
+        FormularioContacto.tsx
+      services/
+        red-apoyo.service.ts
+      RedApoyoPage.tsx
+    tareas/
+      TareasPage.tsx
+    vinculacion/
+      services/
+        vinculacion.service.ts
+      VinculacionPage.tsx
+  store/
+    useAuthStore.ts
+  types/
+    index.ts
+  App.tsx
+  index.css
+  main.tsx
+.gitignore
+.oxlintrc.json
+index.html
+package.json
+postcss.config.js
+README.md
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+
+================================================================
+Files
+================================================================
+
+================
+File: src/components/layouts/PrivateLayout.tsx
+================
+// Ruta: src/components/layouts/PrivateLayout.tsx
+
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Home, Mic, CalendarDays, PhoneCall } from 'lucide-react';
+
+export const PrivateLayout = () => {
+  const { rol } = useAuthStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const basePath = rol === 'Adulto Mayor' ? '/paciente' : '/cuidador';
+  const isActive = (path: string) => location.pathname.includes(path);
+
+  return (
+    <div className="flex flex-col min-h-screen w-full bg-slate-50 text-slate-900 relative pb-20 md:max-w-md md:mx-auto md:shadow-2xl">
+      
+      <main className="flex-1 w-full">
+        <Outlet />
+      </main>
+
+      <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 px-2 py-2 z-50 flex justify-around items-center md:max-w-md md:left-1/2 md:-translate-x-1/2 pb-safe shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.05)]">
+        <button onClick={() => navigate(`${basePath}/inicio`)} 
+          className={`flex flex-col items-center gap-1 w-16 min-h-[48px] justify-center focus:outline-none rounded-xl transition-colors ${isActive('/inicio') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <Home size={26} strokeWidth={isActive('/inicio') ? 2.5 : 2} />
+          <span className="text-[10px] font-bold">Inicio</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/asistente`)} 
+          className={`flex flex-col items-center gap-1 w-16 min-h-[48px] justify-center focus:outline-none rounded-xl transition-colors ${isActive('/asistente') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <Mic size={26} strokeWidth={isActive('/asistente') ? 2.5 : 2} />
+          <span className="text-[10px] font-bold text-center leading-tight">Hablar con<br/>Luma</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/tareas`)} 
+          className={`flex flex-col items-center gap-1 w-16 min-h-[48px] justify-center focus:outline-none rounded-xl transition-colors ${isActive('/tareas') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <CalendarDays size={26} strokeWidth={isActive('/tareas') ? 2.5 : 2} />
+          <span className="text-[10px] font-bold text-center leading-tight">Mis<br/>tareas</span>
+        </button>
+
+        <button onClick={() => navigate(`${basePath}/red-apoyo`)} 
+          className={`flex flex-col items-center gap-1 w-16 min-h-[48px] justify-center focus:outline-none rounded-xl transition-colors ${isActive('/red-apoyo') ? 'text-blue-700' : 'text-slate-500 hover:text-blue-600'}`}>
+          <PhoneCall size={26} strokeWidth={isActive('/red-apoyo') ? 2.5 : 2} />
+          <span className="text-[10px] font-bold text-center leading-tight">Red de<br/>Apoyo</span>
+        </button>
+      </nav>
+    </div>
+  );
+};
+
+================
+File: src/config/api.client.ts
+================
+// Ruta: src/config/api.client.ts
+
+import axios from 'axios';
+import { useAuthStore } from '../store/useAuthStore';
+
+export const apiClient = axios.create({
+  baseURL: '/graphql',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+================
+File: src/features/auth/components/LoginForm.tsx
+================
+// Ruta: src/features/auth/components/LoginForm.tsx
+
+import React, { useState } from 'react';
+import { useAuthStore } from '../../../store/useAuthStore';
+import { Eye, EyeOff, Loader2, ArrowRight, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { loginMutation } from '../services/auth.service';
+
+export const LoginForm = () => {
+  const loginFn = useAuthStore((state) => state.login);
+  const navigate = useNavigate();
+  
+  const [correo, setCorreo] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{ correo?: string; password?: string }>({});
+
+  const mutation = useMutation({
+    mutationFn: () => loginMutation(correo, password),
+    onSuccess: (data) => {
+      loginFn(data.access_token, data.usuario_id, data.rol);
+      navigate('/');
+    },
+  });
+
+  const validateForm = () => {
+    const newErrors: { correo?: string; password?: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!correo) newErrors.correo = 'Obligatorio';
+    else if (!emailRegex.test(correo)) newErrors.correo = 'Correo inválido';
+    if (!password) newErrors.password = 'Obligatorio';
+    
+    setValidationErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateForm()) mutation.mutate();
+  };
+
+  const isLoading = mutation.isPending;
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-6 mt-6" noValidate>
+      {mutation.isError && (
+        <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-r-2xl flex items-center gap-3">
+          <AlertCircle className="text-sos flex-shrink-0" size={28} />
+          <p className="text-text font-bold text-lg">
+            {mutation.error instanceof Error ? mutation.error.message : 'Error de conexión'}
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="correo" className="text-xl font-extrabold text-text">Correo electrónico</label>
+        <input
+          id="correo"
+          type="email"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          disabled={isLoading}
+          className={`w-full min-h-touch px-4 rounded-2xl border-2 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all bg-white ${
+            validationErrors.correo ? 'border-sos' : 'border-slate-300 focus:border-primary'
+          }`}
+          placeholder="ejemplo@correo.com"
+        />
+        {validationErrors.correo && <span className="text-sos font-bold text-lg">{validationErrors.correo}</span>}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="password" className="text-xl font-extrabold text-text">Contraseña</label>
+        <div className="relative">
+          <input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
+            className={`w-full min-h-touch pl-4 pr-16 rounded-2xl border-2 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all bg-white ${
+              validationErrors.password ? 'border-sos' : 'border-slate-300 focus:border-primary'
+            }`}
+            placeholder="••••••"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 min-w-touch min-h-touch flex items-center justify-center text-slate-500 hover:text-primary"
+          >
+            {showPassword ? <EyeOff size={28} /> : <Eye size={28} />}
+          </button>
+        </div>
+        {validationErrors.password && <span className="text-sos font-bold text-lg">{validationErrors.password}</span>}
+      </div>
+
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full min-h-touch mt-4 bg-primary hover:bg-primary-hover text-primary-content text-2xl font-bold rounded-2xl flex items-center justify-center gap-3 disabled:opacity-70 shadow-md"
+      >
+        {isLoading ? <><Loader2 className="animate-spin" size={32} /> Entrando...</> : <><ArrowRight size={32} strokeWidth={3} /> Iniciar sesión</>}
+      </button>
+    </form>
+  );
+};
+
+================
+File: src/features/auth/services/auth.service.ts
+================
+// Ruta: src/features/auth/services/auth.service.ts
+
+import { apiClient } from '../../../config/api.client';
+import type { Enum_Rol } from '../../../types';
+
+export interface LoginResponse {
+  access_token: string;
+  usuario_id: string;
+  rol: Enum_Rol;
+}
+
+const mapGraphQLRoleToEnum = (gqlRole: string): Enum_Rol => {
+  if (gqlRole === 'ADULTO_MAYOR') return 'Adulto Mayor';
+  if (gqlRole === 'CUIDADOR') return 'Cuidador';
+  return 'Adulto Mayor'; 
+};
+
+export const loginMutation = async (correo: string, password: string): Promise<LoginResponse> => {
+  const query = `
+    mutation Login($correo: String!, $password: String!) {
+      login(correo: $correo, password: $password) {
+        access_token
+        usuario_id
+        rol
+      }
+    }
+  `;
+
+  const response = await apiClient.post('', {
+    query,
+    variables: { correo, password },
+  });
+
+  if (response.data.errors) {
+    throw new Error(response.data.errors[0].message || 'Credenciales incorrectas');
+  }
+
+  const data = response.data.data.login;
+  
+  return {
+    access_token: data.access_token,
+    usuario_id: data.usuario_id,
+    rol: mapGraphQLRoleToEnum(data.rol),
+  };
+};
+
+================
+File: src/features/auth/services/registro.service.ts
+================
+// Ruta: src/features/auth/services/registro.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+
+export interface CreateUsuarioInput {
+  nombre: string;
+  correo: string;
+  password: string; // Se envía en texto plano según RNF-06
+  rol: string;
+}
+
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+export const registrarUsuario = async (input: CreateUsuarioInput) => {
+  const mutation = `
+    mutation RegistrarUsuario($input: CreateUsuarioInput!) {
+      registrarUsuario(input: $input) {
+        _id
+        nombre
+        correo
+        rol
+        estado_activo
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.registrarUsuario;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+================
+File: src/features/auth/LoginPage.tsx
+================
+// Ruta: src/features/auth/LoginPage.tsx
+
+import { Link } from 'react-router-dom';
+import { LoginForm } from './components/LoginForm';
+
+export const LoginPage = () => {
+  return (
+    <main className="flex-1 flex flex-col justify-center px-6 py-8 min-h-screen bg-background">
+      <div className="text-center flex flex-col items-center">
+        <img 
+          src="/logo_LumaIA.png" 
+          alt="Logotipo de LumaIA" 
+          className="w-32 md:w-40 object-contain mb-4 drop-shadow-sm" 
+        />
+        <h1 className="text-4xl font-extrabold text-text mb-2 tracking-tight">
+          Iniciar sesión
+        </h1>
+        <p className="text-xl text-text/80 font-medium">
+          Ingresa a tu cuenta de LumaIA
+        </p>
+      </div>
+
+      <LoginForm />
+
+      <div className="mt-12 flex flex-col items-center gap-4 text-xl w-full">
+        <p className="text-text/80 font-bold">¿Aún no tienes una cuenta?</p>
+        <Link 
+          to="/registro" 
+          className="w-full min-h-touch flex items-center justify-center bg-secondary text-secondary-content font-bold rounded-2xl shadow-sm"
+        >
+          Crear cuenta nueva
+        </Link>
+      </div>
+    </main>
+  );
+};
+
+================
+File: src/features/auth/RegistroPage.tsx
+================
+// Ruta: src/features/auth/RegistroPage.tsx
+
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { registrarUsuario } from './services/registro.service';
+import { Loader2, AlertCircle, User, ShieldAlert, ArrowLeft } from 'lucide-react';
+import type { Enum_Rol } from '../../types';
+
+export const RegistroPage = () => {
+  const navigate = useNavigate();
+  const [nombre, setNombre] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [password, setPassword] = useState('');
+  const [rol, setRol] = useState<Enum_Rol | null>(null);
+
+  // Mapeamos el estado visual al enumerador que espera GraphQL
+  const mapRolToBackend = (rolSeleccionado: Enum_Rol): string => {
+    return rolSeleccionado === 'Adulto Mayor' ? 'ADULTO_MAYOR' : 'CUIDADOR';
+  };
+
+  const mutation = useMutation({
+    mutationFn: () => registrarUsuario({
+      nombre: nombre.trim(),
+      correo: correo.trim().toLowerCase(),
+      password: password, // Se envía en texto plano, el backend lo encripta en password_hash[cite: 17, 19]
+      rol: mapRolToBackend(rol!)
+    }),
+    onSuccess: () => {
+      // Redirigimos al Login enviando un mensaje de éxito por el estado del router
+      navigate('/login', { state: { mensajeExito: '¡Cuenta creada con éxito! Por favor, inicia sesión.' } });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombre || !correo || !password || !rol) return;
+    mutation.mutate();
+  };
+
+  const isPending = mutation.isPending;
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background px-6 py-8">
+      {/* Cabecera */}
+      <header className="flex items-center gap-4 mb-8">
+        <Link 
+          to="/login"
+          className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary/20"
+        >
+          <ArrowLeft size={28} strokeWidth={2.5} />
+        </Link>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">Crear Cuenta</h1>
+      </header>
+
+      {/* Manejo de Errores */}
+      {mutation.isError && (
+        <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-2xl flex items-start gap-3 mb-6 animate-in fade-in">
+          <AlertCircle className="text-sos flex-shrink-0 mt-1" size={28} />
+          <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al registrar usuario'}</p>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
+        
+        {/* Selección de Rol (RF-001.2)[cite: 17] */}
+        <div className="flex flex-col gap-3">
+          <label className="text-xl font-extrabold text-text">¿Cómo usarás LumaIA?</label>
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setRol('Adulto Mayor')}
+              disabled={isPending}
+              className={`flex flex-col items-center justify-center p-4 rounded-2xl border-4 min-h-[120px] transition-all focus:outline-none ${rol === 'Adulto Mayor' ? 'border-primary bg-primary/10' : 'border-slate-200 bg-white hover:bg-slate-50'}`}
+            >
+              <User size={40} className={rol === 'Adulto Mayor' ? 'text-primary mb-2' : 'text-slate-400 mb-2'} />
+              <span className={`font-extrabold text-lg ${rol === 'Adulto Mayor' ? 'text-primary' : 'text-slate-600'}`}>Adulto Mayor</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRol('Cuidador')}
+              disabled={isPending}
+              className={`flex flex-col items-center justify-center p-4 rounded-2xl border-4 min-h-[120px] transition-all focus:outline-none ${rol === 'Cuidador' ? 'border-teal-600 bg-teal-50' : 'border-slate-200 bg-white hover:bg-slate-50'}`}
+            >
+              <ShieldAlert size={40} className={rol === 'Cuidador' ? 'text-teal-600 mb-2' : 'text-slate-400 mb-2'} />
+              <span className={`font-extrabold text-lg ${rol === 'Cuidador' ? 'text-teal-600' : 'text-slate-600'}`}>Cuidador</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Datos Básicos (RF-001.1)[cite: 17] */}
+        <div className="flex flex-col gap-4 mt-2 pb-24">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Nombre completo</label>
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. Juan Pérez" required />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Correo electrónico</label>
+            <input type="email" value={correo} onChange={e => setCorreo(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="ejemplo@correo.com" required />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Contraseña</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="••••••••" required />
+          </div>
+        </div>
+
+        <div className="fixed bottom-6 left-0 w-full px-6 md:max-w-md md:mx-auto">
+          <button 
+            type="submit" 
+            disabled={isPending || !rol}
+            className="w-full min-h-touch py-4 bg-primary hover:bg-primary-hover disabled:bg-slate-300 disabled:text-slate-500 text-primary-content font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary/40"
+          >
+            {isPending ? <Loader2 className="animate-spin" size={32} /> : 'Crear Cuenta'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+================
+File: src/features/citas/components/FormularioCita.tsx
+================
+// Ruta: src/features/citas/components/FormularioCita.tsx
+
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { crearCita } from '../services/citas.service';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+interface Props {
+  usuarioId: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export const FormularioCita = ({ usuarioId, onClose, onSuccess }: Props) => {
+  const queryClient = useQueryClient();
+  const [titulo, setTitulo] = useState('');
+  const [fecha, setFecha] = useState('');
+  const [hora, setHora] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      // Combinar fecha y hora local en formato ISO-8601[cite: 27]
+      const fechaHoraISO = new Date(`${fecha}T${hora}:00`).toISOString();
+      return crearCita({
+        usuario_id: usuarioId,
+        titulo_evento: titulo,
+        fecha_hora: fechaHoraISO,
+        ubicacion: ubicacion || undefined,
+      });
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['citas', usuarioId] });
+      onSuccess();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!titulo || !fecha || !hora) return;
+    mutation.mutate();
+  };
+
+  const isPending = mutation.isPending;
+
+  return (
+    <div className="fixed inset-0 bg-text/50 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-3xl font-extrabold text-text mb-6 text-center">Nueva Cita</h2>
+        
+        {mutation.isError && (
+          <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3 mb-6">
+            <AlertCircle className="text-sos flex-shrink-0" size={24} />
+            <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Motivo de la cita</label>
+            <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-teal-600/20 bg-white" placeholder="Ej. Consulta Cardiológica" required />
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Fecha</label>
+            <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-teal-600/20 bg-white" required />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Hora</label>
+            <input type="time" value={hora} onChange={e => setHora(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-teal-600/20 bg-white" required />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Ubicación (Opcional)</label>
+            <input type="text" value={ubicacion} onChange={e => setUbicacion(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-teal-600/20 bg-white" placeholder="Ej. Consultorio 5" />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button type="button" onClick={onClose} disabled={isPending}
+              className="flex-1 min-h-touch bg-secondary text-secondary-content font-bold text-xl rounded-2xl hover:bg-secondary-hover transition-colors focus:outline-none">
+              Cancelar
+            </button>
+            <button type="submit" disabled={isPending}
+              className="flex-1 min-h-touch bg-teal-600 text-white font-bold text-xl rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-600/30">
+              {isPending ? <Loader2 className="animate-spin" size={24} /> : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/citas/services/citas.service.ts
+================
+// Ruta: src/features/citas/services/citas.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+import type { Cita } from '../../../types';
+
+// Utilidad para interceptar errores de GraphQL
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+export const obtenerCitas = async (usuarioId: string): Promise<Cita[]> => {
+  if (!usuarioId) throw new Error("Sesión inactiva.");
+
+  const query = `
+    query ObtenerCitas($usuario_id: ID!) {
+      obtenerCitasPorUsuario(usuario_id: $usuario_id) {
+        _id
+        titulo_evento
+        fecha_hora
+        ubicacion
+        estado
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query,
+      variables: { usuario_id: usuarioId },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.obtenerCitasPorUsuario || [];
+  } catch (error) {
+    handleGraphQLError(error);
+    return []; 
+  }
+};
+
+export interface CreateCitaInput {
+  usuario_id: string;
+  titulo_evento: string;
+  fecha_hora: string; // Formato ISO-8601 exigido
+  ubicacion?: string;
+}
+
+export const crearCita = async (input: CreateCitaInput): Promise<Cita> => {
+  const mutation = `
+    mutation CrearCita($input: CreateCitaInput!) {
+      crearCita(createCitaInput: $input) {
+        _id
+        titulo_evento
+        fecha_hora
+        ubicacion
+        estado
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.crearCita;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error; 
+  }
+};
+
+================
+File: src/features/citas/CitasPage.tsx
+================
+// Ruta: src/features/citas/CitasPage.tsx
+
+import { useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Calendar, Plus, AlertCircle, ArrowLeft, Loader2, MapPin, Clock, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { obtenerCitas } from './services/citas.service';
+import { FormularioCita } from './components/FormularioCita';
+
+export const CitasPage = () => {
+  const { rol, usuarioId } = useAuthStore();
+  const navigate = useNavigate();
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [toastMensaje, setToastMensaje] = useState<string | null>(null);
+
+  const { data: citas = [], isLoading, isError, error } = useQuery({
+    queryKey: ['citas', usuarioId],
+    queryFn: () => obtenerCitas(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
+
+  const manejarExitoGuardado = () => {
+    setMostrarModal(false);
+    setToastMensaje('¡Cita agendada correctamente!');
+    setTimeout(() => setToastMensaje(null), 3000);
+  };
+
+  return (
+    <div className="flex flex-col min-h-full bg-background p-6 relative">
+      
+      {/* Toast de Notificación Visual */}
+      {toastMensaje && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-green-100 border-2 border-green-500 text-green-900 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center gap-3 font-bold text-lg animate-in slide-in-from-top-10 fade-in duration-300">
+          <CheckCircle size={28} className="text-green-600 flex-shrink-0" />
+          {toastMensaje}
+        </div>
+      )}
+
+      <header className="flex items-center gap-4 mb-8">
+        <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-teal-600/20">
+          <ArrowLeft size={28} strokeWidth={2.5} />
+        </button>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">Mis Citas</h1>
+      </header>
+
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-12 text-teal-600">
+          <Loader2 className="animate-spin mb-4" size={48} />
+          <p className="text-xl font-bold">Cargando agenda...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-2xl flex items-start gap-3 mb-6">
+          <AlertCircle className="text-sos flex-shrink-0 mt-1" size={28} />
+          <p className="text-text font-bold text-lg">{error instanceof Error ? error.message : 'Error de conexión'}</p>
+        </div>
+      )}
+
+      {/* Lista de Citas Renderizada */}
+      {!isLoading && !isError && citas.length > 0 && (
+        <div className="flex flex-col gap-4 pb-24">
+          {citas.map((cita) => (
+            <div key={cita._id} className="bg-teal-50/50 border border-teal-200 p-5 rounded-3xl flex items-start gap-4">
+              <div className="text-teal-600 bg-white p-3 rounded-2xl shadow-sm mt-1">
+                <Calendar size={32} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col flex-1 gap-1">
+                <h3 className="text-2xl font-extrabold text-text leading-tight">{cita.titulo_evento}</h3>
+                <div className="flex items-center gap-2 text-lg text-text/80 font-medium mt-1">
+                  <Clock size={20} className="text-teal-600" />
+                  <span>
+                    {new Date(cita.fecha_hora).toLocaleString('es-MX', { 
+                      weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' 
+                    })}
+                  </span>
+                </div>
+                {cita.ubicacion && (
+                  <div className="flex items-center gap-2 text-lg text-text/80 font-medium mt-1">
+                    <MapPin size={20} className="text-teal-600" />
+                    <span>{cita.ubicacion}</span>
+                  </div>
+                )}
+                {/* Etiqueta de Estado */}
+                <div className="mt-2">
+                  <span className="inline-block bg-white border border-teal-200 text-teal-700 font-bold px-3 py-1 rounded-lg text-sm">
+                    {cita.estado || 'Programada'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!isLoading && !isError && citas.length === 0 && (
+        <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center mt-4">
+          <div className="bg-teal-100 text-teal-600 p-4 rounded-full mb-4">
+            <Calendar size={48} strokeWidth={2} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-text mb-2">Aún no hay citas</h2>
+          <p className="text-lg text-text/80 font-medium">Programa tu primer compromiso médico.</p>
+        </div>
+      )}
+
+      <div className="mt-auto pt-8">
+        <button onClick={() => setMostrarModal(true)}
+          className="w-full min-h-touch py-4 bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-teal-600/30"
+        >
+          <Plus size={32} strokeWidth={3} /> Agregar Cita
+        </button>
+      </div>
+
+      {mostrarModal && (
+        <FormularioCita 
+          usuarioId={usuarioId!} 
+          onClose={() => setMostrarModal(false)} 
+          onSuccess={manejarExitoGuardado} 
+        />
+      )}
+    </div>
+  );
+};
+
+================
+File: src/features/dashboard/DashboardPage.tsx
+================
+// Ruta: src/features/dashboard/DashboardPage.tsx
+
+import React from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { Pill, Stethoscope, Check, LogOut, Loader2, AlertCircle } from 'lucide-react';
+import { obtenerMedicamentos } from '../medicamentos/services/medicamentos.service';
+import { obtenerCitas } from '../citas/services/citas.service';
+
+export const DashboardPage = () => {
+  const { rol, usuarioId, logout } = useAuthStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Fecha capitalizada (Ej. Miércoles, 30 De Septiembre)
+  const fechaGenerada = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fechaFormateada = fechaGenerada.split(', ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(', ');
+
+  // Consumo de datos reales desde MongoDB Atlas
+  const { data: medicamentos = [], isLoading: loadMed, isError: errMed } = useQuery({
+    queryKey: ['medicamentos', usuarioId],
+    queryFn: () => obtenerMedicamentos(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const { data: citas = [], isLoading: loadCitas, isError: errCitas } = useQuery({
+    queryKey: ['citas', usuarioId],
+    queryFn: () => obtenerCitas(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const isLoading = loadMed || loadCitas;
+  const isError = errMed || errCitas;
+
+  // Filtro de citas para el día de hoy
+  const hoy = new Date();
+  const citasDeHoy = citas.filter(cita => {
+    const fechaCita = new Date(cita.fecha_hora);
+    return fechaCita.getDate() === hoy.getDate() && fechaCita.getMonth() === hoy.getMonth() && fechaCita.getFullYear() === hoy.getFullYear();
+  });
+
+  return (
+    <div className="flex flex-col min-h-full p-5 sm:p-6 pb-28 w-full">
+      
+      {/* Cabecera con Cerrar Sesión restaurado */}
+      <header className="flex items-start justify-between mb-6 w-full">
+        <div className="flex items-center gap-3 sm:gap-4 flex-1">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-200 rounded-full border-2 border-slate-300 overflow-hidden flex-shrink-0">
+            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${rol || rol}&backgroundColor=b6e3f4`} alt="Perfil" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-tight">
+              ¡Hola,<br />{rol ? rol : 'Usuario'}!
+            </h1>
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-1">
+            <img src="/logo_LumaIA.png" alt="LumaIA" className="h-6 w-auto opacity-80" />
+            <span className="font-extrabold text-slate-800 text-sm tracking-tight">LumaIA</span>
+          </div>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-1 text-slate-500 hover:text-red-600 transition-colors bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm min-h-touch focus:outline-none focus:ring-2 focus:ring-red-200"
+            aria-label="Cerrar sesión"
+          >
+            <LogOut size={18} strokeWidth={2.5} />
+            <span className="text-xs font-bold">Salir</span>
+          </button>
+        </div>
+      </header>
+
+      <div className="mb-6 w-full">
+        <p className="text-lg sm:text-xl text-slate-600 font-medium leading-snug">
+          Esto es lo que tenemos para hoy,<br/>
+          <span className="font-extrabold text-slate-800">{fechaFormateada}</span>:
+        </p>
+      </div>
+
+      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-800 mb-4 w-full">Recordatorios Pendientes</h2>
+
+      {/* Control de Estados Asíncronos */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-10 w-full">
+          <Loader2 className="animate-spin text-blue-600 mb-2" size={40} />
+          <p className="text-slate-600 font-bold">Sincronizando agenda...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl flex items-center gap-3 mb-4 w-full">
+          <AlertCircle className="text-red-500 flex-shrink-0" size={24} />
+          <p className="text-red-800 font-bold text-sm sm:text-base">No pudimos conectar con tus recordatorios.</p>
+        </div>
+      )}
+
+      {/* Renderizado de Datos Reales */}
+      {!isLoading && !isError && (
+        <div className="flex flex-col gap-4 w-full">
+          
+          {/* Mapeo de Medicamentos (Base de datos real) */}
+          {medicamentos.map((med) => (
+            <div key={med._id} className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-sm border border-slate-100 w-full">
+              <div className="flex gap-3 sm:gap-4">
+                <div className="mt-1">
+                  <Pill size={36} className="text-red-500" strokeWidth={2.5} fill="#fca5a5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-tight truncate whitespace-normal">
+                    {med.nombre_farmaco}
+                  </h3>
+                  <p className="text-orange-700 font-semibold text-base sm:text-lg mt-1">
+                    {/* Mostramos el primer horario de su arreglo o la frecuencia base */}
+                    {med.horarios_especificos?.length > 0 ? `A las ${med.horarios_especificos[0]}` : `Cada ${med.frecuencia_horas} hrs`}
+                  </p>
+                  <p className="text-slate-500 font-medium text-sm">Dosis: {med.dosis}</p>
+                </div>
+              </div>
+              <div className="flex justify-end mt-1">
+                <button className="min-h-[48px] px-6 py-2 bg-blue-700 hover:bg-blue-800 active:scale-95 transition-transform rounded-xl text-white font-extrabold text-lg flex items-center gap-2 shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-700/30">
+                  Listo <Check strokeWidth={3} size={20} />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Mapeo de Citas Médicas (Filtradas para HOY) */}
+          {citasDeHoy.map((cita) => (
+            <div key={cita._id} className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-sm border border-slate-100 w-full">
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div className="mt-1 bg-slate-100 p-2 sm:p-3 rounded-xl text-slate-600 flex-shrink-0">
+                    <Stethoscope size={28} strokeWidth={2.5} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 leading-tight truncate whitespace-normal">
+                      {cita.titulo_evento}
+                    </h3>
+                    <p className="text-slate-600 font-medium mt-1 text-sm sm:text-base">
+                      {new Date(cita.fecha_hora).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
+                {cita.ubicacion && (
+                  <button className="text-blue-700 font-bold border-2 border-blue-100 bg-blue-50 px-3 py-1.5 rounded-full text-xs sm:text-sm flex-shrink-0 active:bg-blue-200 transition-colors">
+                    Ver mapa
+                  </button>
+                )}
+              </div>
+              <div className="flex justify-end mt-1">
+                 <button className="min-h-[48px] px-6 py-2 bg-white border-2 border-blue-700 text-blue-700 active:bg-blue-50 transition-colors rounded-xl font-extrabold text-lg focus:outline-none focus:ring-4 focus:ring-blue-700/20">
+                  Ver más
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {/* Empty State Dinámico */}
+          {!isLoading && !isError && medicamentos.length === 0 && citasDeHoy.length === 0 && (
+            <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center mt-4 w-full">
+              <p className="text-lg text-slate-500 font-bold">No tienes recordatorios pendientes para hoy.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+================
+File: src/features/ia/components/AsistenteView.tsx
+================
+// Ruta: src/features/ia/components/AsistenteView.tsx
+
+import React, { useState, useRef, useEffect } from 'react';
+import { useAuthStore } from '../../../store/useAuthStore';
+import { useMutation } from '@tanstack/react-query';
+import { consultarAsistente } from '../services/ia.service';
+import { ArrowLeft, Volume2, Loader2, Pill, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+interface Mensaje {
+  id: string;
+  emisor: 'user' | 'bot';
+  texto: string;
+}
+
+export const AsistenteView = () => {
+  const { rol, usuarioId } = useAuthStore();
+  const navigate = useNavigate();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [historial, setHistorial] = useState<Mensaje[]>([
+    { 
+      id: 'init', 
+      emisor: 'bot', 
+      texto: `¡Hola ${rol === 'Adulto Mayor' ? 'Adulto Mayor' : 'Cuidador'}! Qué bueno escucharte hoy. ¿Cómo te sientes? ¿Quieres que te recuerde alguna tarea o que charlemos? 😊` 
+    }
+  ]);
+
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
+
+  const reproducirAudio = (texto: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(texto);
+      utterance.lang = 'es-MX';
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Tu dispositivo no soporta lectura en voz alta nativa.");
+    }
+  };
+
+  const mutation = useMutation({
+    mutationFn: (pregunta_id: string) => consultarAsistente({
+      usuario_id: usuarioId!,
+      pregunta_id
+    }),
+    onSuccess: (respuesta) => {
+      setHistorial(prev => [...prev, { id: Date.now().toString(), emisor: 'bot', texto: respuesta }]);
+      reproducirAudio(respuesta); 
+    },
+    onError: (error) => {
+      const msjError = error instanceof Error ? error.message : 'Lo siento, tuve un problema para procesar tu consulta.';
+      setHistorial(prev => [...prev, { id: Date.now().toString(), emisor: 'bot', texto: `Error: ${msjError}` }]);
+    }
+  });
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [historial, mutation.isPending]);
+
+  const hacerPregunta = (textoPregunta: string, idPregunta: string) => {
+    if (mutation.isPending) return;
+    setHistorial(prev => [...prev, { id: Date.now().toString(), emisor: 'user', texto: textoPregunta }]);
+    mutation.mutate(idPregunta);
+  };
+
+  return (
+    // CAMBIO: min-h-full en lugar de min-h-screen para evitar desbordamientos
+    <div className="flex flex-col min-h-full bg-slate-50 relative md:max-w-md md:mx-auto">
+      
+      <header className="flex items-center justify-between p-5 pt-6 bg-slate-50 z-10 sticky top-0">
+        <button 
+          onClick={irAInicio} 
+          className="min-h-[48px] px-5 flex items-center justify-center gap-2 bg-slate-800 text-white rounded-full shadow-sm active:scale-95 transition-transform focus:outline-none focus:ring-4 focus:ring-slate-400"
+        >
+          <ArrowLeft size={24} strokeWidth={2.5} />
+          <span className="font-bold text-lg">Atrás</span>
+        </button>
+        <div className="flex items-center gap-2">
+          <img src="/logo_LumaIA.png" alt="LumaIA" className="h-6 w-auto opacity-80" />
+          <span className="font-extrabold text-slate-800 tracking-tight">LumaIA</span>
+        </div>
+      </header>
+
+      <div className="px-6 mb-2">
+        <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+          Platicar con Luma <span className="text-3xl">💬</span>
+        </h1>
+        <p className="text-xl text-slate-500 font-medium mt-2 leading-snug">
+          Luma está lista para escucharte y ayudarte.
+        </p>
+      </div>
+
+      {/* CAMBIO: pb-48 asegura que los últimos mensajes no queden detrás de las píldoras */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-6 pb-48 scroll-smooth">
+        {historial.map((msg) => (
+          <div key={msg.id} className={`flex w-full ${msg.emisor === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`flex max-w-[90%] gap-3 ${msg.emisor === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              
+              {msg.emisor === 'bot' && (
+                <div className="flex-shrink-0 mt-1 w-14 h-14 bg-blue-100 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=LumaBot&backgroundColor=dbeafe" alt="Luma" className="w-full h-full object-cover" />
+                </div>
+              )}
+
+              <div className="flex flex-col gap-2">
+                <div 
+                  className={`p-5 shadow-sm border ${
+                    msg.emisor === 'user' 
+                      ? 'bg-blue-200 border-blue-300 text-slate-900 rounded-[28px] rounded-br-sm' 
+                      : 'bg-[#eef2f6] border-slate-200 text-slate-800 rounded-[28px] rounded-tl-sm'
+                  }`}
+                >
+                  <p className="text-xl font-medium leading-snug">{msg.texto}</p>
+                </div>
+
+                {msg.emisor === 'bot' && (
+                  <div className="flex justify-end">
+                    <button 
+                      onClick={() => reproducirAudio(msg.texto)}
+                      className="flex items-center gap-2 px-4 py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 transition-colors border border-slate-300 rounded-full text-slate-800 font-bold text-sm min-h-[44px] shadow-sm"
+                    >
+                      <Volume2 size={20} strokeWidth={2.5} />
+                      Escuchar
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {mutation.isPending && (
+          <div className="flex w-full justify-start animate-in fade-in zoom-in duration-300">
+            <div className="flex max-w-[85%] gap-3 flex-row">
+              <div className="flex-shrink-0 mt-1 w-14 h-14 bg-blue-100 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=LumaBot&backgroundColor=dbeafe" alt="Luma" className="w-full h-full object-cover" />
+              </div>
+              <div className="bg-[#eef2f6] border border-slate-200 p-5 rounded-[28px] rounded-tl-sm shadow-sm flex items-center gap-3">
+                <Loader2 className="animate-spin text-blue-600" size={28} />
+                <p className="text-xl font-medium text-slate-600">Procesando...</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* CAMBIO: fixed bottom-[76px] apila este contenedor justo encima del Bottom Nav del Layout */}
+      <div className="fixed bottom-[76px] left-0 w-full bg-gradient-to-t from-white via-white to-transparent pt-6 pb-2 z-20 md:max-w-md md:left-1/2 md:-translate-x-1/2">
+        <div className="flex overflow-x-auto gap-3 px-5 snap-x scrollbar-hide pb-2">
+          
+          <button 
+            onClick={() => hacerPregunta('¿A qué hora me toca mi próxima medicina?', 'PROXIMA_TOMA')}
+            disabled={mutation.isPending}
+            className="snap-start flex items-center gap-2 px-5 py-3 min-h-[48px] bg-white hover:bg-slate-50 active:scale-95 border-2 border-slate-300 rounded-full flex-shrink-0 transition-transform focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-sm"
+          >
+            <Pill className="text-red-500" size={24} strokeWidth={2.5} />
+            <span className="font-extrabold text-lg text-slate-700 whitespace-nowrap">¿Próxima medicina?</span>
+          </button>
+
+          <button 
+            onClick={() => hacerPregunta('¿Tengo citas programadas para hoy?', 'CITAS_HOY')}
+            disabled={mutation.isPending}
+            className="snap-start flex items-center gap-2 px-5 py-3 min-h-[48px] bg-white hover:bg-slate-50 active:scale-95 border-2 border-slate-300 rounded-full flex-shrink-0 transition-transform focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-sm"
+          >
+            <Calendar className="text-teal-600" size={24} strokeWidth={2.5} />
+            <span className="font-extrabold text-lg text-slate-700 whitespace-nowrap">¿Qué tengo hoy?</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/ia/services/ia.service.ts
+================
+// Ruta: src/features/ia/services/ia.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+
+export interface ConsultarAsistenteInput {
+  usuario_id: string;
+  pregunta_id: string;
+}
+
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+export const consultarAsistente = async (input: ConsultarAsistenteInput): Promise<string> => {
+  if (!input.usuario_id) throw new Error("Sesión inactiva.");
+
+  const mutation = `
+    mutation ConsultarAsistente($usuario_id: ID!, $pregunta_id: String!) {
+      consultarAsistente(usuario_id: $usuario_id, pregunta_id: $pregunta_id)
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: input,
+    });
+
+    if (response.data.errors?.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    // El backend devuelve directamente el string con la respuesta
+    return response.data.data.consultarAsistente;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+================
+File: src/features/medicamentos/components/FormularioMedicamento.tsx
+================
+// Ruta: src/features/medicamentos/components/FormularioMedicamento.tsx
+
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { crearMedicamento } from '../services/medicamentos.service';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+interface Props {
+  usuarioId: string;
+  onClose: () => void;
+  onSuccess: () => void; // Nuevo callback para disparar el Toast
+}
+
+export const FormularioMedicamento = ({ usuarioId, onClose, onSuccess }: Props) => {
+  const queryClient = useQueryClient();
+  const [nombre, setNombre] = useState('');
+  const [dosis, setDosis] = useState('');
+  const [hora, setHora] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: () => crearMedicamento({
+      usuario_id: usuarioId,
+      nombre_farmaco: nombre,
+      dosis: dosis,
+      frecuencia_horas: 24, 
+      horarios_especificos: [hora]
+    }),
+    onSuccess: async () => {
+      // Obligamos a React Query a refetcher los datos desde MongoDB
+      await queryClient.invalidateQueries({ queryKey: ['medicamentos', usuarioId] });
+      onSuccess(); // Dispara el Toast y cierra el modal
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombre || !dosis || !hora) return;
+    mutation.mutate();
+  };
+
+  const isPending = mutation.isPending;
+
+  return (
+    <div className="fixed inset-0 bg-text/50 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
+        <h2 className="text-3xl font-extrabold text-text mb-6 text-center">Nuevo Medicamento</h2>
+        
+        {mutation.isError && (
+          <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3 mb-6">
+            <AlertCircle className="text-sos flex-shrink-0" size={24} />
+            <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Nombre del fármaco</label>
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. Losartán" required />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Dosis indicada</label>
+            <input type="text" value={dosis} onChange={e => setDosis(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" placeholder="Ej. 1 pastilla" required />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Hora de la toma</label>
+            <input type="time" value={hora} onChange={e => setHora(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-primary/20 bg-white" required />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button type="button" onClick={onClose} disabled={isPending}
+              className="flex-1 min-h-touch bg-secondary text-secondary-content font-bold text-xl rounded-2xl hover:bg-secondary-hover transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" disabled={isPending}
+              className="flex-1 min-h-touch bg-primary text-primary-content font-bold text-xl rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-primary-hover">
+              {isPending ? <Loader2 className="animate-spin" size={24} /> : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/medicamentos/services/medicamentos.service.ts
+================
+// Ruta: src/features/medicamentos/services/medicamentos.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+import type { Medicamento } from '../../../types';
+
+// Utilidad para interceptar errores de GraphQL (Simulando el comportamiento de Apollo)
+const handleGraphQLError = (error: unknown) => {
+  // Si el backend responde con un HTTP 400/500 pero incluye el array de GraphQL
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  // Si es un error de red puro
+  throw error;
+};
+
+export const obtenerMedicamentos = async (usuarioId: string): Promise<Medicamento[]> => {
+  if (!usuarioId) throw new Error("No hay una sesión activa para consultar medicamentos.");
+
+  const query = `
+    query ObtenerMedicamentos($usuario_id: ID!) {
+      obtenerMedicamentosPorUsuario(usuario_id: $usuario_id) {
+        _id
+        nombre_farmaco
+        dosis
+        frecuencia_horas
+        horarios_especificos
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query,
+      variables: { usuario_id: usuarioId },
+    });
+
+    // Si el backend devuelve HTTP 200 pero incluye errores lógicos de GraphQL
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.obtenerMedicamentosPorUsuario || [];
+  } catch (error) {
+    handleGraphQLError(error);
+    return []; // Satisfacer la firma de TypeScript, aunque el throw cortará la ejecución antes
+  }
+};
+
+export interface CreateMedicamentoInput {
+  usuario_id: string;
+  nombre_farmaco: string;
+  dosis: string;
+  frecuencia_horas?: number;
+  horarios_especificos: string[];
+}
+
+export const crearMedicamento = async (input: CreateMedicamentoInput): Promise<Medicamento> => {
+  const mutation = `
+    mutation CrearMedicamento($input: CreateMedicamentoInput!) {
+      crearMedicamento(createMedicamentoInput: $input) {
+        _id
+        usuario_id
+        nombre_farmaco
+        dosis
+        frecuencia_horas
+        horarios_especificos
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.crearMedicamento;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error; // Obligatorio lanzar el error para que React Query dispare el estado isError en la UI
+  }
+};
+
+================
+File: src/features/medicamentos/MedicamentosPage.tsx
+================
+// Ruta: src/features/medicamentos/MedicamentosPage.tsx
+
+import React, { useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Pill, Plus, AlertCircle, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { obtenerMedicamentos } from './services/medicamentos.service';
+import { FormularioMedicamento } from './components/FormularioMedicamento';
+
+export const MedicamentosPage = () => {
+  const { rol, usuarioId } = useAuthStore();
+  const navigate = useNavigate();
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [toastMensaje, setToastMensaje] = useState<string | null>(null);
+
+  const { data: medicamentos = [], isLoading, isError, error } = useQuery({
+    queryKey: ['medicamentos', usuarioId],
+    queryFn: () => obtenerMedicamentos(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
+
+  const manejarExitoGuardado = () => {
+    setMostrarModal(false);
+    setToastMensaje('¡Medicamento guardado correctamente!');
+    // Ocultar el toast después de 3 segundos
+    setTimeout(() => setToastMensaje(null), 3000);
+  };
+
+  return (
+    <div className="flex flex-col min-h-full bg-background p-6 relative">
+      
+      {/* Toast de Notificación Visual */}
+      {toastMensaje && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-green-100 border-2 border-green-500 text-green-900 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center gap-3 font-bold text-lg animate-in slide-in-from-top-10 fade-in duration-300">
+          <CheckCircle size={28} className="text-green-600 flex-shrink-0" />
+          {toastMensaje}
+        </div>
+      )}
+
+      <header className="flex items-center gap-4 mb-8">
+        <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary/20">
+          <ArrowLeft size={28} strokeWidth={2.5} />
+        </button>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">Mis Medicamentos</h1>
+      </header>
+
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-12 text-primary">
+          <Loader2 className="animate-spin mb-4" size={48} />
+          <p className="text-xl font-bold">Cargando tratamientos...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-2xl flex items-start gap-3 mb-6">
+          <AlertCircle className="text-sos flex-shrink-0 mt-1" size={28} />
+          <p className="text-text font-bold text-lg">{error instanceof Error ? error.message : 'Error al conectar'}</p>
+        </div>
+      )}
+
+      {/* Renderizado de la lista si hay datos */}
+      {!isLoading && !isError && medicamentos.length > 0 && (
+        <div className="flex flex-col gap-4 pb-24">
+          {medicamentos.map((med) => (
+            <div key={med._id} className="bg-orange-100/50 border border-orange-200 p-5 rounded-3xl flex items-center gap-4">
+              <div className="text-orange-600 bg-white p-3 rounded-2xl shadow-sm">
+                <Pill size={32} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col flex-1">
+                <h3 className="text-2xl font-extrabold text-text">{med.nombre_farmaco}</h3>
+                <p className="text-lg text-text/80 font-medium">
+                  {med.horarios_especificos?.join(', ')} • {med.dosis}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Estado vacío[cite: 23] */}
+      {!isLoading && !isError && medicamentos.length === 0 && (
+        <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center mt-4">
+          <div className="bg-orange-100 text-orange-600 p-4 rounded-full mb-4">
+            <Pill size={48} strokeWidth={2} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-text mb-2">Aún no hay medicamentos</h2>
+          <p className="text-lg text-text/80 font-medium">Agrega tu primer tratamiento.</p>
+        </div>
+      )}
+
+      <div className="mt-auto pt-8">
+        <button onClick={() => setMostrarModal(true)}
+          className="w-full min-h-touch py-4 bg-primary hover:bg-primary-hover text-primary-content font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary/30"
+        >
+          <Plus size={32} strokeWidth={3} /> Agregar Medicamento
+        </button>
+      </div>
+
+      {/* Renderizado del Modal[cite: 24] */}
+      {mostrarModal && (
+        <FormularioMedicamento 
+          usuarioId={usuarioId!} 
+          onClose={() => setMostrarModal(false)} 
+          onSuccess={manejarExitoGuardado} 
+        />
+      )}
+    </div>
+  );
+};
+
+================
+File: src/features/notas/components/FormularioNota.tsx
+================
+// Ruta: src/features/notas/components/FormularioNota.tsx
+
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { crearNota } from '../services/notas.service';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+interface Props {
+  usuarioId: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export const FormularioNota = ({ usuarioId, onClose, onSuccess }: Props) => {
+  const queryClient = useQueryClient();
+  const [contenido, setContenido] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: () => crearNota({
+      usuario_id: usuarioId,
+      contenido: contenido.trim(),
+      fecha_creacion: new Date().toISOString(), // Fecha ISO-8601 autogenerada
+    }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['notas', usuarioId] });
+      onSuccess();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contenido.trim()) return;
+    mutation.mutate();
+  };
+
+  const isPending = mutation.isPending;
+
+  return (
+    <div className="fixed inset-0 bg-text/50 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
+        <h2 className="text-3xl font-extrabold text-text mb-6 text-center">Nueva Nota</h2>
+        
+        {mutation.isError && (
+          <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3 mb-6">
+            <AlertCircle className="text-sos flex-shrink-0" size={24} />
+            <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Escribe tu nota</label>
+            <textarea 
+              rows={5}
+              value={contenido} 
+              onChange={e => setContenido(e.target.value)} 
+              disabled={isPending}
+              className="p-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-yellow-500/20 bg-white resize-none" 
+              placeholder="Ej. Preguntar al doctor sobre la dieta..." 
+              required 
+            />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button type="button" onClick={onClose} disabled={isPending}
+              className="flex-1 min-h-touch bg-secondary text-secondary-content font-bold text-xl rounded-2xl hover:bg-secondary-hover transition-colors focus:outline-none">
+              Cancelar
+            </button>
+            <button type="submit" disabled={isPending}
+              className="flex-1 min-h-touch bg-yellow-500 text-slate-900 font-bold text-xl rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-500/30">
+              {isPending ? <Loader2 className="animate-spin" size={24} /> : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/notas/services/notas.service.ts
+================
+// Ruta: src/features/notas/services/notas.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+
+export interface NotaPersonal {
+  _id: string;
+  contenido: string;
+  fecha_creacion: string;
+}
+
+export interface CreateNotaInput {
+  usuario_id: string;
+  contenido: string;
+  fecha_creacion: string;
+}
+
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+export const obtenerNotas = async (usuarioId: string): Promise<NotaPersonal[]> => {
+  if (!usuarioId) throw new Error("Sesión inactiva.");
+
+  const query = `
+    query ObtenerNotasPersonales($usuario_id: ID!) {
+      obtenerNotasPersonalesPorUsuario(usuario_id: $usuario_id) {
+        _id
+        contenido
+        fecha_creacion
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query,
+      variables: { usuario_id: usuarioId },
+    });
+
+    if (response.data.errors?.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.obtenerNotasPersonalesPorUsuario || [];
+  } catch (error) {
+    handleGraphQLError(error);
+    return [];
+  }
+};
+
+export const crearNota = async (input: CreateNotaInput): Promise<NotaPersonal> => {
+  const mutation = `
+    mutation CrearNotaPersonal($input: CreateNotaPersonalInput!) {
+      crearNotaPersonal(createNotaPersonalInput: $input) {
+        _id
+        contenido
+        fecha_creacion
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors?.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.crearNotaPersonal;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+================
+File: src/features/notas/NotasPage.tsx
+================
+// Ruta: src/features/notas/NotasPage.tsx
+
+import React, { useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { StickyNote, Plus, AlertCircle, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { obtenerNotas } from './services/notas.service';
+import { FormularioNota } from './components/FormularioNota';
+
+export const NotasPage = () => {
+  const { rol, usuarioId } = useAuthStore();
+  const navigate = useNavigate();
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [toastMensaje, setToastMensaje] = useState<string | null>(null);
+
+  const { data: notas = [], isLoading, isError, error } = useQuery({
+    queryKey: ['notas', usuarioId],
+    queryFn: () => obtenerNotas(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
+
+  const manejarExitoGuardado = () => {
+    setMostrarModal(false);
+    setToastMensaje('¡Nota guardada exitosamente!');
+    setTimeout(() => setToastMensaje(null), 3000);
+  };
+
+  return (
+    <div className="flex flex-col min-h-full bg-background p-6 relative">
+      
+      {/* Toast Notificación */}
+      {toastMensaje && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-green-100 border-2 border-green-500 text-green-900 px-4 py-3 rounded-2xl shadow-xl z-50 flex items-center gap-3 font-bold text-lg animate-in slide-in-from-top-10 fade-in duration-300">
+          <CheckCircle size={28} className="text-green-600 flex-shrink-0" />
+          {toastMensaje}
+        </div>
+      )}
+
+      {/* Cabecera */}
+      <header className="flex items-center gap-4 mb-8">
+        <button onClick={irAInicio} className="min-w-touch min-h-touch flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-yellow-500/20">
+          <ArrowLeft size={28} strokeWidth={2.5} />
+        </button>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">Mis Notas</h1>
+      </header>
+
+      {/* Manejo de Carga y Error */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-12 text-yellow-600">
+          <Loader2 className="animate-spin mb-4" size={48} />
+          <p className="text-xl font-bold">Cargando apuntes...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-2xl flex items-start gap-3 mb-6">
+          <AlertCircle className="text-sos flex-shrink-0 mt-1" size={28} />
+          <p className="text-text font-bold text-lg">{error instanceof Error ? error.message : 'Error al conectar'}</p>
+        </div>
+      )}
+
+      {/* Listado de Notas */}
+      {!isLoading && !isError && notas.length > 0 && (
+        <div className="flex flex-col gap-4 pb-24">
+          {notas.map((nota) => (
+            <div key={nota._id} className="bg-yellow-50 border border-yellow-200 p-5 rounded-3xl flex items-start gap-4 shadow-sm">
+              <div className="text-yellow-600 bg-white p-3 rounded-2xl shadow-sm mt-1">
+                <StickyNote size={32} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col flex-1 gap-1">
+                <p className="text-xl font-bold text-text whitespace-pre-wrap">{nota.contenido}</p>
+                <span className="text-sm text-slate-500 font-medium mt-2">
+                  {/* SOLUCIÓN: toLocaleString en lugar de toLocaleDateString */}
+                  {new Date(nota.fecha_creacion).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' })}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Estado Vacío */}
+      {!isLoading && !isError && notas.length === 0 && (
+        <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-3xl p-8 text-center mt-4">
+          <div className="bg-yellow-100 text-yellow-700 p-4 rounded-full mb-4">
+            <StickyNote size={48} strokeWidth={2} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-text mb-2">Sin apuntes</h2>
+          <p className="text-lg text-text/80 font-medium">Guarda tu primer recordatorio libre.</p>
+        </div>
+      )}
+
+      {/* Botón Flotante */}
+      <div className="mt-auto pt-8">
+        <button onClick={() => setMostrarModal(true)}
+          className="w-full min-h-touch py-4 bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-yellow-500/30"
+        >
+          <Plus size={32} strokeWidth={3} /> Agregar Nota
+        </button>
+      </div>
+
+      {mostrarModal && (
+        <FormularioNota 
+          usuarioId={usuarioId!} 
+          onClose={() => setMostrarModal(false)} 
+          onSuccess={manejarExitoGuardado} 
+        />
+      )}
+    </div>
+  );
+};
+
+================
+File: src/features/red-apoyo/components/FormularioContacto.tsx
+================
+// Ruta: src/features/red-apoyo/components/FormularioContacto.tsx
+
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { agregarContacto } from '../services/red-apoyo.service';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+interface Props {
+  usuarioId: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export const FormularioContacto = ({ usuarioId, onClose, onSuccess }: Props) => {
+  const queryClient = useQueryClient();
+  const [nombre, setNombre] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [parentesco, setParentesco] = useState('');
+
+  const mutation = useMutation({
+    mutationFn: () => agregarContacto({
+      usuario_id: usuarioId, // ID extraído directamente de Zustand
+      nombre_contacto: nombre.trim(),
+      telefono: telefono.trim(),
+      parentesco: parentesco.trim(),
+    }),
+    onSuccess: async () => {
+      // Forzamos la actualización de la lista de contactos en el perfil
+      await queryClient.invalidateQueries({ queryKey: ['perfil', usuarioId] });
+      onSuccess();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombre || !telefono || !parentesco) return;
+    mutation.mutate();
+  };
+
+  const isPending = mutation.isPending;
+
+  return (
+    <div className="fixed inset-0 bg-text/50 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
+        <h2 className="text-3xl font-extrabold text-text mb-6 text-center">Nuevo Contacto</h2>
+        
+        {mutation.isError && (
+          <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3 mb-6">
+            <AlertCircle className="text-sos flex-shrink-0" size={24} />
+            <p className="text-text font-bold text-lg">{mutation.error instanceof Error ? mutation.error.message : 'Error al guardar'}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Nombre completo</label>
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-red-600/20 bg-white" placeholder="Ej. María Sánchez" required />
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Teléfono</label>
+            <input type="tel" value={telefono} onChange={e => setTelefono(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-red-600/20 bg-white" placeholder="Ej. 55 1234 5678" required />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xl font-extrabold text-text">Parentesco / Relación</label>
+            <input type="text" value={parentesco} onChange={e => setParentesco(e.target.value)} disabled={isPending}
+              className="min-h-touch px-4 rounded-2xl border-2 border-slate-300 text-xl focus:outline-none focus:ring-4 focus:ring-red-600/20 bg-white" placeholder="Ej. Hija, Médico" required />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button type="button" onClick={onClose} disabled={isPending}
+              className="flex-1 min-h-touch bg-secondary text-secondary-content font-bold text-xl rounded-2xl hover:bg-secondary-hover transition-colors focus:outline-none">
+              Cancelar
+            </button>
+            <button type="submit" disabled={isPending}
+              className="flex-1 min-h-touch bg-red-600 text-white font-bold text-xl rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-600/30">
+              {isPending ? <Loader2 className="animate-spin" size={24} /> : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/red-apoyo/services/red-apoyo.service.ts
+================
+// Ruta: src/features/red-apoyo/services/red-apoyo.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+
+export interface ContactoEmergencia {
+  nombre_contacto: string;
+  telefono: string;
+  parentesco: string;
+}
+
+export interface PerfilUsuario {
+  _id: string;
+  nombre: string;
+  correo: string;
+  rol: string;
+  contactos_emergencia: ContactoEmergencia[];
+}
+
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+export const obtenerPerfil = async (usuarioId: string): Promise<PerfilUsuario> => {
+  if (!usuarioId) throw new Error("ID de usuario no válido o sesión inactiva.");
+
+  const query = `
+    query ObtenerPerfil($usuario_id: ID!) {
+      obtenerUsuario(usuario_id: $usuario_id) {
+        _id
+        nombre
+        correo
+        rol
+        contactos_emergencia {
+          nombre_contacto
+          telefono
+          parentesco
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query,
+      variables: { usuario_id: usuarioId },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.obtenerUsuario;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+export interface AgregarContactoInput {
+  usuario_id: string;
+  nombre_contacto: string;
+  telefono: string;
+  parentesco: string;
+}
+
+export const agregarContacto = async (input: AgregarContactoInput): Promise<ContactoEmergencia[]> => {
+  const mutation = `
+    mutation AgregarContactoEmergencia($input: AgregarContactoInput!) {
+      agregarContactoEmergencia(input: $input) {
+        _id
+        contactos_emergencia {
+          nombre_contacto
+          telefono
+          parentesco
+        }
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors && response.data.errors.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.agregarContactoEmergencia.contactos_emergencia;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+================
+File: src/features/red-apoyo/RedApoyoPage.tsx
+================
+// Ruta: src/features/red-apoyo/RedApoyoPage.tsx
+
+import React, { useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Users, Plus, AlertCircle, Loader2, CheckCircle, PhoneCall } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { obtenerPerfil } from './services/red-apoyo.service';
+import { FormularioContacto } from './components/FormularioContacto';
+
+export const RedApoyoPage = () => {
+  const { usuarioId } = useAuthStore();
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [toastMensaje, setToastMensaje] = useState<string | null>(null);
+
+  const { data: perfil, isLoading, isError, error } = useQuery({
+    queryKey: ['perfil', usuarioId],
+    queryFn: () => obtenerPerfil(usuarioId!),
+    enabled: !!usuarioId,
+  });
+
+  const contactos = perfil?.contactos_emergencia || [];
+
+  const manejarExitoGuardado = () => {
+    setMostrarModal(false);
+    setToastMensaje('¡Contacto guardado exitosamente!');
+    setTimeout(() => setToastMensaje(null), 3000);
+  };
+
+  return (
+    <div className="flex flex-col min-h-full p-5 sm:p-6 pb-32 bg-slate-50 relative w-full">
+      
+      {toastMensaje && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-green-100 border-2 border-green-500 text-green-900 px-4 py-3 rounded-[20px] shadow-lg z-50 flex items-center gap-3 font-bold text-lg animate-in slide-in-from-top-10 fade-in duration-300">
+          <CheckCircle size={28} className="text-green-600 flex-shrink-0" />
+          {toastMensaje}
+        </div>
+      )}
+
+      <header className="mb-6 w-full">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight leading-tight">
+          Red de Apoyo
+        </h1>
+        <p className="text-lg sm:text-xl text-slate-600 font-medium mt-2">
+          Llama rápidamente a tus familiares o cuidadores.
+        </p>
+      </header>
+
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center py-12 text-slate-500 w-full">
+          <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+          <p className="text-xl font-bold">Cargando contactos...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl flex items-start gap-3 mb-6 w-full shadow-sm">
+          <AlertCircle className="text-red-500 flex-shrink-0 mt-1" size={28} />
+          <p className="text-red-800 font-bold text-lg">{error instanceof Error ? error.message : 'Error al obtener perfil'}</p>
+        </div>
+      )}
+
+      {/* Lista de Contactos (Nuevo Diseño Visual) */}
+      {!isLoading && !isError && contactos.length > 0 && (
+        <div className="flex flex-col gap-4 w-full">
+          {contactos.map((contacto, idx) => (
+            <div key={idx} className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 w-full">
+              <div className="flex items-center gap-4">
+                <div className="mt-1 bg-red-50 p-3 rounded-2xl text-red-500 flex-shrink-0">
+                  <Users size={32} strokeWidth={2.5} />
+                </div>
+                <div className="flex flex-col flex-1 min-w-0">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 truncate whitespace-normal leading-tight">
+                    {contacto.nombre_contacto}
+                  </h3>
+                  <p className="text-lg text-slate-500 font-medium mt-1">{contacto.parentesco}</p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end mt-2">
+                <a 
+                  href={`tel:${contacto.telefono}`}
+                  className="min-h-[48px] px-6 py-2 bg-blue-700 hover:bg-blue-800 active:scale-95 transition-transform rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-700/30"
+                >
+                  <PhoneCall size={22} strokeWidth={2.5} />
+                  Llamar
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !isError && contactos.length === 0 && (
+        <div className="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[24px] p-8 text-center mt-4 w-full shadow-sm">
+          <div className="bg-red-50 text-red-500 p-4 rounded-full mb-4">
+            <Users size={48} strokeWidth={2.5} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-800 mb-2">Sin red de apoyo</h2>
+          <p className="text-lg text-slate-500 font-medium">Agrega a tus familiares de confianza.</p>
+        </div>
+      )}
+
+      {/* Botón Flotante para agregar (Integrado al flujo) */}
+      <div className="mt-8 w-full">
+        <button onClick={() => setMostrarModal(true)}
+          className="w-full min-h-[56px] py-4 bg-white border-2 border-blue-700 text-blue-700 active:bg-blue-50 transition-colors font-extrabold text-xl rounded-2xl shadow-sm flex items-center justify-center gap-3 focus:outline-none focus:ring-4 focus:ring-blue-700/20"
+        >
+          <Plus size={28} strokeWidth={3} /> Agregar Contacto
+        </button>
+      </div>
+
+      {mostrarModal && (
+        <FormularioContacto 
+          usuarioId={usuarioId!} 
+          onClose={() => setMostrarModal(false)} 
+          onSuccess={manejarExitoGuardado} 
+        />
+      )}
+    </div>
+  );
+};
+
+================
+File: src/features/tareas/TareasPage.tsx
+================
+// Ruta: src/features/tareas/TareasPage.tsx
+
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
+import { Pill, StickyNote, Calendar, ArrowRight } from 'lucide-react';
+
+export const TareasPage = () => {
+  const { rol } = useAuthStore();
+  const navigate = useNavigate();
+  
+  // Resolvemos la ruta base dependiendo del rol del usuario
+  const basePath = rol === 'Adulto Mayor' ? '/paciente' : '/cuidador';
+
+  return (
+    <div className="flex flex-col min-h-full p-5 sm:p-6 pb-32 w-full">
+      <header className="mb-8 w-full">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight leading-tight">
+          Mis Tareas
+        </h1>
+        <p className="text-lg sm:text-xl text-slate-600 font-medium mt-2">
+          Selecciona un módulo para gestionar tu información.
+        </p>
+      </header>
+
+      <div className="flex flex-col gap-5 w-full">
+        
+        {/* Tarjeta: Medicamentos (RF-04) */}
+        <div className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 w-full">
+          <div className="flex gap-4 items-start">
+            <div className="mt-1 bg-red-50 p-3 rounded-2xl text-red-500 flex-shrink-0">
+              <Pill size={36} strokeWidth={2.5} fill="#fca5a5" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-tight">
+                Medicamentos
+              </h3>
+              <p className="text-slate-500 font-medium text-sm sm:text-base mt-1">
+                Añade o modifica tus tratamientos, dosis y alarmas.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end mt-2">
+            <button 
+              onClick={() => navigate(`${basePath}/medicamentos`)}
+              className="min-h-[48px] px-6 py-2 bg-blue-700 hover:bg-blue-800 active:scale-95 transition-transform rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-700/30"
+              aria-label="Ir a medicamentos"
+            >
+              Abrir <ArrowRight strokeWidth={3} size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* Tarjeta: Notas Personales (RF-06) */}
+        <div className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 w-full">
+          <div className="flex gap-4 items-start">
+            <div className="mt-1 bg-yellow-50 p-3 rounded-2xl text-yellow-600 flex-shrink-0">
+              <StickyNote size={36} strokeWidth={2.5} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-tight">
+                Notas Personales
+              </h3>
+              <p className="text-slate-500 font-medium text-sm sm:text-base mt-1">
+                Escribe apuntes rápidos y recordatorios libres.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end mt-2">
+            <button 
+              onClick={() => navigate(`${basePath}/notas`)}
+              className="min-h-[48px] px-6 py-2 bg-blue-700 hover:bg-blue-800 active:scale-95 transition-transform rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-700/30"
+              aria-label="Ir a notas personales"
+            >
+              Abrir <ArrowRight strokeWidth={3} size={20} />
+            </button>
+          </div>
+        </div>
+
+        {/* Tarjeta: Citas Médicas (RF-05) */}
+        <div className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 w-full">
+          <div className="flex gap-4 items-start">
+            <div className="mt-1 bg-teal-50 p-3 rounded-2xl text-teal-600 flex-shrink-0">
+              <Calendar size={36} strokeWidth={2.5} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-tight">
+                Citas Médicas
+              </h3>
+              <p className="text-slate-500 font-medium text-sm sm:text-base mt-1">
+                Visualiza y programa tus próximas consultas.
+              </p>
+            </div>
+          </div>
+          <div className="flex justify-end mt-2">
+            <button 
+              onClick={() => navigate(`${basePath}/citas`)}
+              className="min-h-[48px] px-6 py-2 bg-blue-700 hover:bg-blue-800 active:scale-95 transition-transform rounded-2xl text-white font-extrabold text-lg flex items-center justify-center gap-2 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-700/30"
+              aria-label="Ir a citas médicas"
+            >
+              Abrir <ArrowRight strokeWidth={3} size={20} />
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+================
+File: src/features/vinculacion/services/vinculacion.service.ts
+================
+// Ruta: src/features/vinculacion/services/vinculacion.service.ts
+
+import axios from 'axios';
+import { apiClient } from '../../../config/api.client';
+
+const handleGraphQLError = (error: unknown) => {
+  if (axios.isAxiosError(error) && error.response?.data?.errors) {
+    throw new Error(error.response.data.errors[0].message);
+  }
+  throw error;
+};
+
+// Función para el Adulto Mayor
+export const generarPin = async (usuarioId: string): Promise<string> => {
+  if (!usuarioId) throw new Error("Sesión inactiva.");
+
+  const mutation = `
+    mutation GenerarPinVinculacion($usuario_id: ID!) {
+      generarPinVinculacion(usuario_id: $usuario_id)
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { usuario_id: usuarioId },
+    });
+
+    if (response.data.errors?.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.generarPinVinculacion;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+export interface VincularInput {
+  cuidador_id: string;
+  pin: string;
+}
+
+// Función para el Cuidador
+export const vincularCuidador = async (input: VincularInput) => {
+  const mutation = `
+    mutation VincularCuidador($input: VincularCuidadorInput!) {
+      vincularCuidador(input: $input) {
+        _id
+        nombre
+        rol
+        cuidador_vinculado_id
+      }
+    }
+  `;
+
+  try {
+    const response = await apiClient.post('', {
+      query: mutation,
+      variables: { input },
+    });
+
+    if (response.data.errors?.length > 0) {
+      throw new Error(response.data.errors[0].message);
+    }
+
+    return response.data.data.vincularCuidador;
+  } catch (error) {
+    handleGraphQLError(error);
+    throw error;
+  }
+};
+
+================
+File: src/features/vinculacion/VinculacionPage.tsx
+================
+// Ruta: src/features/vinculacion/VinculacionPage.tsx
+
+import React, { useState } from 'react';
+import { useAuthStore } from '../../store/useAuthStore';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { generarPin, vincularCuidador } from './services/vinculacion.service';
+import { ShieldAlert, Key, AlertCircle, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+export const VinculacionPage = () => {
+  const { rol, usuarioId } = useAuthStore();
+  const navigate = useNavigate();
+  const [pinIngresado, setPinIngresado] = useState('');
+  const [exito, setExito] = useState(false);
+
+  const irAInicio = () => navigate(rol === 'Adulto Mayor' ? '/paciente/inicio' : '/cuidador/inicio');
+
+  // Lógica para Adulto Mayor: Obtener/Generar su PIN automáticamente al entrar[cite: 17]
+  const { data: pinGenerado, isLoading: cargandoPin, isError: errorPin, error: errorDetallePin } = useQuery({
+    queryKey: ['pin_vinculacion', usuarioId],
+    queryFn: () => generarPin(usuarioId!),
+    enabled: rol === 'Adulto Mayor' && !!usuarioId,
+    refetchOnWindowFocus: false, // Evita regenerar el PIN si cambian de app
+  });
+
+  // Lógica para Cuidador: Enviar el PIN
+  const mutationVinculacion = useMutation({
+    mutationFn: () => vincularCuidador({ 
+      cuidador_id: usuarioId!, 
+      pin: pinIngresado.trim() 
+    }),
+    onSuccess: () => setExito(true),
+  });
+
+  const handleVincular = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pinIngresado.trim()) return;
+    mutationVinculacion.mutate();
+  };
+
+  return (
+    <div className="flex flex-col min-h-full bg-background p-6">
+      <header className="flex items-center gap-4 mb-8">
+        <button onClick={irAInicio} className="min-w-[48px] min-h-[48px] flex items-center justify-center bg-white border border-slate-200 rounded-xl text-text shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-primary/20">
+          <ArrowLeft size={28} strokeWidth={2.5} />
+        </button>
+        <h1 className="text-3xl font-extrabold text-text tracking-tight">Vinculación</h1>
+      </header>
+
+      {/* VISTA: ADULTO MAYOR (Generador de PIN) */}
+      {rol === 'Adulto Mayor' && (
+        <div className="flex flex-col items-center justify-center flex-1 text-center mt-4 pb-24">
+          <div className="bg-primary/10 text-primary p-6 rounded-full mb-6">
+            <Key size={64} strokeWidth={2} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-text mb-4">Código de Enlace</h2>
+          <p className="text-lg text-text/80 font-medium mb-8">
+            Comparte este código con tu familiar o cuidador para que puedan ayudarte a gestionar tu rutina.
+          </p>
+
+          {cargandoPin ? (
+            <Loader2 className="animate-spin text-primary" size={48} />
+          ) : errorPin ? (
+            <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-center gap-3">
+              <AlertCircle className="text-sos flex-shrink-0" size={24} />
+              <p className="text-text font-bold">{errorDetallePin instanceof Error ? errorDetallePin.message : 'Error al generar tu código.'}</p>
+            </div>
+          ) : (
+            <div className="bg-white border-4 border-primary/20 rounded-3xl py-6 px-12 shadow-sm w-full max-w-[300px]">
+              <span className="text-5xl font-extrabold text-primary tracking-widest">{pinGenerado}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* VISTA: CUIDADOR (Ingreso de PIN) */}
+      {rol === 'Cuidador' && (
+        <div className="flex flex-col flex-1 mt-4 pb-24">
+          <div className="flex items-center justify-center bg-teal-50 text-teal-600 p-6 rounded-full mb-6 mx-auto w-32 h-32 shadow-sm">
+            <ShieldAlert size={64} strokeWidth={2.5} />
+          </div>
+          <h2 className="text-2xl font-extrabold text-text mb-4 text-center">Conectar con Paciente</h2>
+          <p className="text-lg text-text/80 font-medium mb-8 text-center">
+            Ingresa el código temporal que aparece en la pantalla del dispositivo del adulto mayor.
+          </p>
+
+          {exito ? (
+            <div className="bg-green-100 border-2 border-green-500 p-6 rounded-3xl flex flex-col items-center text-center gap-4 animate-in zoom-in duration-300">
+              <CheckCircle className="text-green-600" size={64} />
+              <h3 className="text-2xl font-extrabold text-green-900">¡Cuentas Vinculadas!</h3>
+              <p className="text-green-800 text-lg font-medium">Ya puedes monitorear y asistir al paciente.</p>
+              <button onClick={irAInicio} className="mt-4 min-h-[48px] px-8 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl rounded-2xl transition-colors">
+                Ir al Dashboard
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleVincular} className="flex flex-col gap-6 w-full">
+              {mutationVinculacion.isError && (
+                <div className="bg-sos/10 border-l-4 border-sos p-4 rounded-xl flex items-start gap-3 animate-in fade-in">
+                  <AlertCircle className="text-sos flex-shrink-0 mt-1" size={24} />
+                  <p className="text-text font-bold text-lg">{mutationVinculacion.error instanceof Error ? mutationVinculacion.error.message : 'Código incorrecto o expirado'}</p>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-2">
+                <input 
+                  type="text" 
+                  value={pinIngresado} 
+                  onChange={e => setPinIngresado(e.target.value.toUpperCase())} 
+                  disabled={mutationVinculacion.isPending}
+                  className="min-h-[64px] text-center tracking-[0.5em] px-4 rounded-2xl border-4 border-slate-200 text-3xl font-extrabold focus:outline-none focus:border-teal-500 bg-white uppercase transition-colors" 
+                  placeholder="------" 
+                  required 
+                />
+              </div>
+
+              <div className="fixed bottom-6 left-0 w-full px-6 md:max-w-md md:mx-auto">
+                <button 
+                  type="submit" 
+                  disabled={mutationVinculacion.isPending || !pinIngresado.trim()}
+                  className="w-full min-h-touch py-4 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:text-slate-500 text-white font-extrabold text-2xl rounded-2xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-95 focus:outline-none focus:ring-4 focus:ring-teal-600/40"
+                >
+                  {mutationVinculacion.isPending ? <Loader2 className="animate-spin" size={32} /> : 'Vincular Cuentas'}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+================
+File: src/store/useAuthStore.ts
+================
+// Ruta: src/store/useAuthStore.ts
+
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { Enum_Rol } from '../types/index';
+
+interface AuthState {
+  token: string | null;
+  usuarioId: string | null;
+  rol: Enum_Rol | null;
+  isAuthenticated: boolean;
+  login: (token: string, usuarioId: string, rol: Enum_Rol) => void;
+  logout: () => void;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      token: null,
+      usuarioId: null,
+      rol: null,
+      isAuthenticated: false,
+      login: (token, usuarioId, rol) => set({ token, usuarioId, rol, isAuthenticated: true }),
+      logout: () => set({ token: null, usuarioId: null, rol: null, isAuthenticated: false }),
+    }),
+    { name: 'luma-auth-storage' }
+  )
+);
+
+================
+File: src/types/index.ts
+================
+export type Enum_Rol = 'Adulto Mayor' | 'Cuidador';
+export type Enum_EstadoToma = 'Pendiente' | 'Confirmada' | 'Omitida';
+export type Enum_EstadoCita = 'Programada' | 'Completada' | 'Cancelada';
+
+export interface ContactoEmergencia {
+    nombre_contacto: string;
+    telefono: string;
+    parentesco: string;
+}
+
+export interface Usuario {
+    _id: string;
+    nombre: string;
+    correo: string;
+    rol: Enum_Rol;
+    cuidador_vinculado_id?: string;
+    pin_vinculacion?: string;
+    estado_activo: boolean;
+    tokens_dispositivo: string[];
+    contactos_emergencia: ContactoEmergencia[];
+}
+
+export interface Medicamento {
+    _id: string;
+    usuario_id: string;
+    nombre_farmaco: string;
+    dosis: string;
+    frecuencia_horas?: number;
+    horarios_especificos: string[];
+    fecha_eliminacion?: string; 
+}
+
+export interface Cita {
+    _id: string;
+    usuario_id: string;
+    titulo_evento: string;
+    fecha_hora: string; 
+    ubicacion?: string;
+    estado: Enum_EstadoCita;
+    fecha_eliminacion?: string; 
+}
+
+export interface NotaPersonal {
+    _id: string;
+    usuario_id: string;
+    contenido: string;
+    fecha_creacion: string; 
+    fecha_eliminacion?: string; 
+}
+
+export interface RegistroToma {
+    _id: string;
+    medicamento_id: string;
+    fecha_programada: string; 
+    estado_toma: Enum_EstadoToma;
+    fecha_confirmacion?: string; 
+}
+
+================
+File: src/App.tsx
+================
+// Ruta: src/App.tsx
+
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/useAuthStore';
+import { LoginPage } from './features/auth/LoginPage';
+import { PrivateLayout } from './components/layouts/PrivateLayout';
+import { DashboardPage } from './features/dashboard/DashboardPage';
+import { MedicamentosPage } from './features/medicamentos/MedicamentosPage';
+import { CitasPage } from './features/citas/CitasPage';
+import { NotasPage } from './features/notas/NotasPage';
+import { RedApoyoPage } from './features/red-apoyo/RedApoyoPage';
+import { RegistroPage } from './features/auth/RegistroPage';
+import { VinculacionPage } from './features/vinculacion/VinculacionPage';
+import { AsistenteView } from './features/ia/components/AsistenteView';
+import { TareasPage } from './features/tareas/TareasPage';
+
+function App() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const rol = useAuthStore((state) => state.rol);
+
+  return (
+    <Routes>
+      <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" replace />} />
+      <Route path="/registro" element={<RegistroPage />} />
+
+      <Route element={isAuthenticated ? <PrivateLayout /> : <Navigate to="/login" replace />}>
+        <Route path="/" element={ rol === 'Adulto Mayor' ? <Navigate to="/paciente/inicio" replace /> : <Navigate to="/cuidador/inicio" replace /> } />
+        <Route path="/vinculacion" element={<VinculacionPage />} />
+        <Route path="/paciente/inicio" element={<DashboardPage />} />
+        <Route path="/cuidador/inicio" element={<DashboardPage />} />
+        
+        <Route path="/paciente/medicamentos" element={<MedicamentosPage />} />
+        <Route path="/cuidador/medicamentos" element={<MedicamentosPage />} />
+
+        <Route path="/paciente/citas" element={<CitasPage />} />
+        <Route path="/cuidador/citas" element={<CitasPage />} />
+
+        <Route path="/paciente/notas" element={<NotasPage />} />
+        <Route path="/cuidador/notas" element={<NotasPage />} />
+
+        <Route path="/paciente/red-apoyo" element={<RedApoyoPage />} />
+        <Route path="/cuidador/red-apoyo" element={<RedApoyoPage />} />
+
+        <Route path="/paciente/tareas" element={<TareasPage />} />
+        <Route path="/cuidador/tareas" element={<TareasPage />} />
+
+        {/* SOLUCIÓN: Rutas añadidas para el Asistente Lógico */}
+        <Route path="/paciente/asistente" element={<AsistenteView />} />
+        <Route path="/cuidador/asistente" element={<AsistenteView />} />
+      </Route>
+      
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+export default App;
+
+================
+File: src/index.css
+================
+/* Ruta: src/index.css */
+
+@import "tailwindcss";
+
+@theme {
+  /* Paleta cálida basada en el diseño aprobado (Mockup 2) para reducir la fatiga visual */
+  --color-primary: #de5d3a; /* Naranja/Tierra cálido para acciones principales */
+  --color-primary-hover: #c44c2d;
+  --color-primary-content: #ffffff;
+  
+  --color-secondary: #e5e7eb; /* Gris claro para acciones secundarias (Mockup 1) */
+  --color-secondary-hover: #d1d5db;
+  --color-secondary-content: #374151;
+  
+  --color-sos: #d32f2f;
+  --color-sos-hover: #b71c1c;
+  --color-sos-content: #ffffff;
+  
+  --color-background: #fcf8f4; /* Fondo crema/cálido de alto contraste */
+  --color-text: #2b221f; /* Texto oscuro grueso para legibilidad óptima */
+
+  --spacing-touch: 48px;
+}
+
+@layer base {
+  html {
+    font-size: 100%; 
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+  }
+}
+
+================
+File: src/main.tsx
+================
+// Ruta: src/main.tsx
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import App from './App';
+import './index.css';
+
+const queryClient = new QueryClient({
+    defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
+});
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+        </QueryClientProvider>
+    </React.StrictMode>
+);
+
+================
+File: .gitignore
+================
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+================
+File: .oxlintrc.json
+================
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+
+================
+File: index.html
+================
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>luma-ia</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+================
+File: package.json
+================
+{
+  "name": "luma-ia",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.104.0",
+    "axios": "^1.20.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.48.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4",
+    "tailwind-merge": "^3.7.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.1",
+    "oxlint": "^1.81.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  }
+}
+
+================
+File: postcss.config.js
+================
+// Ruta: postcss.config.js
+
+export default {
+    plugins: {
+        '@tailwindcss/postcss': {},
+        autoprefixer: {},
+    },
+}
+
+================
+File: README.md
+================
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+```
+
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+================
+File: tsconfig.app.json
+================
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "esnext",
+    "types": ["vite/client"],
+    "allowArbitraryExtensions": true,
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}
+
+================
+File: tsconfig.json
+================
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+================
+File: tsconfig.node.json
+================
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "module": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["vite.config.ts"]
+}
+
+================
+File: vite.config.ts
+================
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/graphql': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+});
+
+
+
+
+
+================================================================
+End of Codebase
+================================================================
