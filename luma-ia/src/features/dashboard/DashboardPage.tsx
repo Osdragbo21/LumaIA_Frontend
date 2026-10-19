@@ -4,16 +4,16 @@ import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Pill, Stethoscope, Check, LogOut, Loader2, AlertCircle } from 'lucide-react';
+import { Pill, Stethoscope, Check, LogOut, Loader2, AlertCircle, Phone, Clock } from 'lucide-react';
 import { obtenerMedicamentos } from '../medicamentos/services/medicamentos.service';
 import { obtenerCitas } from '../citas/services/citas.service';
-import { confirmarToma } from './services/registros-toma.service'; // <-- NUEVO
+import { confirmarToma } from './services/registros-toma.service';
 
 export const DashboardPage = () => {
   const { rol, usuarioId, logout } = useAuthStore();
   const navigate = useNavigate();
+  const basePath = rol === 'Adulto Mayor' ? '/paciente' : '/cuidador';
 
-  // Estado local para los medicamentos ya confirmados visualmente
   const [tomasConfirmadas, setTomasConfirmadas] = useState<Set<string>>(new Set());
 
   const handleLogout = () => {
@@ -36,11 +36,9 @@ export const DashboardPage = () => {
     enabled: !!usuarioId,
   });
 
-  // Mutación para confirmar toma
   const mutationToma = useMutation({
     mutationFn: (medicamento_id: string) => confirmarToma(medicamento_id),
     onSuccess: (_, variables) => {
-      // Añadir al Set para cambiar estado visual inmediatamente
       setTomasConfirmadas(prev => new Set(prev).add(variables));
     }
   });
@@ -61,118 +59,136 @@ export const DashboardPage = () => {
   });
 
   return (
-    <div className="flex flex-col min-h-full p-5 sm:p-6 pb-28 w-full">
+    <div className="flex flex-col min-h-full p-6 w-full">
       
-      <header className="flex items-start justify-between mb-6 w-full">
-        <div className="flex items-center gap-3 sm:gap-4 flex-1">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-200 rounded-full border-2 border-slate-300 overflow-hidden flex-shrink-0">
-            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${rol || 'User'}&backgroundColor=b6e3f4`} alt="Perfil" className="w-full h-full object-cover" />
+      {/* HEADER PROFESIONAL */}
+      <header className="flex items-center justify-between mb-8 w-full bg-white p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+        <div className="flex items-center gap-4 flex-1">
+          <div className="w-16 h-16 bg-blue-100 rounded-full border-4 border-blue-50 overflow-hidden flex-shrink-0 flex items-center justify-center">
+             <span className="text-2xl font-black text-blue-700">{rol?.charAt(0) || 'U'}</span>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight leading-tight">
-              ¡Hola,<br />{rol ? rol : 'Usuario'}!
+            <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Bienvenido</span>
+            <h1 className="text-2xl font-black text-slate-900 leading-tight truncate">
+              {rol ? rol : 'Usuario'}
             </h1>
           </div>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-1">
-            <img src="/logo_LumaIA.png" alt="LumaIA" className="h-6 w-auto opacity-80" />
-            <span className="font-extrabold text-slate-800 text-sm tracking-tight">LumaIA</span>
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="flex items-center gap-1 text-slate-500 hover:text-red-600 transition-colors bg-white px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm min-h-touch focus:outline-none focus:ring-2 focus:ring-red-200"
-          >
-            <LogOut size={18} strokeWidth={2.5} />
-            <span className="text-xs font-bold">Salir</span>
-          </button>
-        </div>
+        <button 
+          onClick={handleLogout}
+          className="flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-slate-700 transition-colors p-3 rounded-2xl focus:outline-none focus:ring-4 focus:ring-slate-200 active:scale-[0.98]"
+        >
+          <LogOut size={24} strokeWidth={2.5} />
+          <span className="text-[10px] font-bold uppercase tracking-wider">Salir</span>
+        </button>
       </header>
 
-      <div className="mb-6 w-full">
-        <p className="text-lg sm:text-xl text-slate-600 font-medium leading-snug">
-          Esto es lo que tenemos para hoy,<br/>
-          <span className="font-extrabold text-slate-800">{fechaFormateada}</span>:
-        </p>
+      {/* BOTÓN EMERGENCIA (SOS) */}
+      <button 
+        onClick={() => navigate(`${basePath}/red-apoyo`)}
+        className="w-full min-h-[72px] mb-8 bg-rose-600 hover:bg-rose-700 active:scale-[0.98] transition-all rounded-3xl flex items-center justify-center gap-4 shadow-[0_8px_20px_-6px_rgba(225,29,72,0.4)] focus:outline-none focus:ring-4 focus:ring-rose-300 border-b-4 border-rose-800"
+      >
+        <div className="bg-white/20 p-2 rounded-full">
+          <Phone className="text-white" size={32} strokeWidth={2.5} />
+        </div>
+        <span className="text-white font-black text-2xl tracking-wide">EMERGENCIA SOS</span>
+      </button>
+
+      <div className="mb-6 w-full flex items-center gap-3">
+        <Clock className="text-slate-400" size={24} />
+        <h2 className="text-xl font-bold text-slate-700 capitalize">
+          {fechaFormateada}
+        </h2>
       </div>
 
-      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-800 mb-4 w-full">Recordatorios Pendientes</h2>
-
       {isLoading && (
-        <div className="flex flex-col items-center justify-center py-10 w-full">
-          <Loader2 className="animate-spin text-blue-600 mb-2" size={40} />
-          <p className="text-slate-600 font-bold">Sincronizando agenda...</p>
+        <div className="flex flex-col items-center justify-center py-12 w-full bg-white rounded-3xl border-2 border-slate-200 border-dashed">
+          <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+          <p className="text-slate-600 font-bold text-lg">Preparando tu día...</p>
         </div>
       )}
 
       {isError && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl flex items-center gap-3 mb-4 w-full">
-          <AlertCircle className="text-red-500 flex-shrink-0" size={24} />
-          <p className="text-red-800 font-bold text-sm sm:text-base">No pudimos conectar con tus recordatorios.</p>
+        <div className="bg-rose-50 border-2 border-rose-200 p-5 rounded-3xl flex items-center gap-4 mb-4 w-full shadow-sm">
+          <AlertCircle className="text-rose-600 flex-shrink-0" size={32} />
+          <p className="text-rose-900 font-bold text-lg leading-snug">Ocurrió un problema al cargar tu información médica.</p>
         </div>
       )}
 
       {!isLoading && !isError && (
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-5 w-full">
           
+          {/* MEDICAMENTOS */}
           {medicamentos.map((med) => {
             const isConfirmado = tomasConfirmadas.has(med._id);
             return (
-              <div key={med._id} className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-sm border border-slate-100 w-full">
-                <div className="flex gap-3 sm:gap-4">
-                  <div className="mt-1">
-                    <Pill size={36} className="text-red-500" strokeWidth={2.5} fill="#fca5a5" />
+              <div key={med._id} className={`rounded-3xl p-5 flex flex-col gap-4 shadow-sm border-2 transition-all duration-300 ${isConfirmado ? 'bg-emerald-50 border-emerald-200 opacity-80' : 'bg-white border-slate-200'}`}>
+                <div className="flex gap-4">
+                  <div className={`mt-1 p-3 rounded-2xl flex-shrink-0 h-fit ${isConfirmado ? 'bg-emerald-200 text-emerald-700' : 'bg-blue-100 text-blue-600'}`}>
+                    <Pill size={32} strokeWidth={2.5} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-slate-800 leading-tight truncate whitespace-normal">
+                    <h3 className={`text-2xl font-black leading-tight truncate whitespace-normal ${isConfirmado ? 'text-emerald-900 line-through decoration-emerald-400' : 'text-slate-900'}`}>
                       {med.nombre_farmaco}
                     </h3>
-                    <p className="text-orange-700 font-semibold text-base sm:text-lg mt-1">
+                    <p className={`font-bold text-lg mt-1 ${isConfirmado ? 'text-emerald-700' : 'text-blue-700'}`}>
                       {med.horarios_especificos?.length > 0 ? `A las ${med.horarios_especificos[0]}` : `Cada ${med.frecuencia_horas} hrs`}
                     </p>
-                    <p className="text-slate-500 font-medium text-sm">Dosis: {med.dosis}</p>
+                    <p className="text-slate-600 font-medium text-base mt-1">Dosis: {med.dosis}</p>
                   </div>
                 </div>
-                <div className="flex justify-end mt-1">
-                  {/* BOTÓN "LISTO ✔" AHORA FUNCIONAL */}
-                  <button 
-                    onClick={() => handleConfirmarToma(med._id)}
-                    disabled={isConfirmado || mutationToma.isPending}
-                    className={`min-h-[48px] px-6 py-2 transition-all rounded-xl text-white font-extrabold text-lg flex items-center gap-2 shadow-sm focus:outline-none focus:ring-4 
-                      ${isConfirmado 
-                        ? 'bg-green-600 focus:ring-green-600/30' 
-                        : 'bg-blue-700 hover:bg-blue-800 active:scale-95 focus:ring-blue-700/30'}`}
-                  >
-                    {isConfirmado ? 'Confirmado' : 'Listo'} <Check strokeWidth={3} size={20} />
-                  </button>
-                </div>
+                
+                <button 
+                  onClick={() => handleConfirmarToma(med._id)}
+                  disabled={isConfirmado || mutationToma.isPending}
+                  className={`min-h-[56px] w-full px-6 py-3 transition-all rounded-2xl font-black text-xl flex items-center justify-center gap-3 focus:outline-none focus:ring-4 active:scale-[0.98] 
+                    ${isConfirmado 
+                      ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-300' 
+                      : 'bg-blue-600 text-white shadow-md hover:bg-blue-700 focus:ring-blue-300 border-b-4 border-blue-800'}`}
+                >
+                  {mutationToma.isPending && !isConfirmado ? (
+                    <Loader2 className="animate-spin" size={28} />
+                  ) : (
+                    <>
+                      {isConfirmado ? 'Toma Confirmada' : 'Ya lo tomé'} <Check strokeWidth={3.5} size={24} />
+                    </>
+                  )}
+                </button>
               </div>
             );
           })}
 
+          {/* CITAS MÉDICAS DE HOY */}
           {citasDeHoy.map((cita) => (
-            <div key={cita._id} className="bg-white rounded-[24px] p-4 sm:p-5 flex flex-col gap-3 shadow-sm border border-slate-100 w-full">
-              <div className="flex justify-between items-start gap-2">
-                <div className="flex gap-3 sm:gap-4 flex-1 min-w-0">
-                  <div className="mt-1 bg-slate-100 p-2 sm:p-3 rounded-xl text-slate-600 flex-shrink-0">
-                    <Stethoscope size={28} strokeWidth={2.5} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 leading-tight truncate whitespace-normal">
-                      {cita.titulo_evento}
-                    </h3>
-                    <p className="text-slate-600 font-medium mt-1 text-sm sm:text-base">
-                      {new Date(cita.fecha_hora).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
+            <div key={cita._id} className="bg-white rounded-3xl p-5 flex items-center gap-4 shadow-sm border-2 border-indigo-100 w-full relative overflow-hidden">
+              <div className="absolute left-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
+              <div className="bg-indigo-50 p-4 rounded-2xl text-indigo-600 flex-shrink-0">
+                <Stethoscope size={32} strokeWidth={2.5} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xl font-black text-slate-900 leading-tight truncate whitespace-normal">
+                  {cita.titulo_evento}
+                </h3>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-lg text-sm">
+                    {new Date(cita.fecha_hora).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  {cita.ubicacion && (
+                    <span className="text-slate-600 font-medium text-sm truncate">{cita.ubicacion}</span>
+                  )}
                 </div>
               </div>
             </div>
           ))}
 
+          {/* ESTADO VACÍO */}
           {medicamentos.length === 0 && citasDeHoy.length === 0 && (
-            <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center mt-4 w-full">
-              <p className="text-lg text-slate-500 font-bold">No tienes recordatorios pendientes para hoy.</p>
+            <div className="bg-white border-2 border-dashed border-slate-300 rounded-3xl p-10 text-center flex flex-col items-center gap-4 w-full">
+               <div className="bg-slate-100 p-4 rounded-full text-slate-400">
+                  <Check size={48} strokeWidth={2} />
+               </div>
+              <h3 className="text-2xl font-black text-slate-800">¡Todo al día!</h3>
+              <p className="text-lg text-slate-500 font-medium">No tienes tareas médicas pendientes para hoy.</p>
             </div>
           )}
         </div>
